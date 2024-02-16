@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -34,11 +35,16 @@ public User signup(SignUpRequest signUpRequest){
    user.setEmail(signUpRequest.getEmail());
    user.setNom(signUpRequest.getNom());
     user.setPrenom(signUpRequest.getPrenom());
+    user.setNumeroTelephone(signUpRequest.getNumeroTelephone());
+    user.setDateNaissance(signUpRequest.getDateNaissance());
     user.setRole(signUpRequest.getRole());
     user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
-    user.setImagePath(saveImage(signUpRequest.getImage())); // Utilisez une méthode pour enregistrer l'image
-
+    user.setImagePath(saveImage(signUpRequest.getImage()));
     return userRepository.save(user);
+
+
+
+
 }
     private String saveImage(MultipartFile image) {
         String imagePath = "src/main/resources/images/" + UUID.randomUUID() + image.getOriginalFilename();
@@ -74,4 +80,10 @@ public JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRe
        return jwtAuthenticationResponse;
    }
    return null ;
-}}
+}
+    public User getAuthenticatedUser(String userEmail) {
+        return userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new IllegalArgumentException("Utilisateur non trouvé"));
+    }
+
+}

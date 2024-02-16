@@ -8,9 +8,14 @@ import com.mypfeproject.pfe.entities.Role;
 import com.mypfeproject.pfe.entities.User;
 import com.mypfeproject.pfe.services.AuthenticationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Date;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -23,12 +28,19 @@ private final AuthenticationService authenticationService ;
                                        @RequestParam("prenom") String prenom,
                                        @RequestParam("email") String email,
                                        @RequestParam("password") String password,
+                                       @RequestParam("numeroTelephone") String numeroTelephone,
+                                   @RequestParam("dateNaissance") String dateNaissance,
+
+
                                        @RequestParam("role") Role role,
                                        @RequestPart("image") MultipartFile image) {
         SignUpRequest signUpRequest = new SignUpRequest();
         signUpRequest.setNom(nom);
         signUpRequest.setPrenom(prenom);
         signUpRequest.setEmail(email);
+        signUpRequest.setNumeroTelephone(numeroTelephone);
+        signUpRequest.setDateNaissance(dateNaissance);
+
         signUpRequest.setPassword(password);
         signUpRequest.setRole(role);
         signUpRequest.setImage(image);
@@ -45,4 +57,17 @@ public ResponseEntity<JwtAuthenticationResponse>signin(@RequestBody SigninReques
     public ResponseEntity<JwtAuthenticationResponse>refresh(@RequestBody RefreshTokenRequest refreshTokenRequest){
         return ResponseEntity.ok(authenticationService.refreshToken(refreshTokenRequest));
     }
+    @GetMapping("/profile")
+    public ResponseEntity<User> getProfile(@AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails != null) {
+            String userEmail = userDetails.getUsername();
+            User utilisateurAuthentifie = authenticationService.getAuthenticatedUser(userEmail);
+            return ResponseEntity.ok(utilisateurAuthentifie);
+        } else {
+            // Gérer le cas où userDetails est null
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
+
+
 }

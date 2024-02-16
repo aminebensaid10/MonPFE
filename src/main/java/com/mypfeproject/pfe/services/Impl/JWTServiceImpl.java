@@ -42,8 +42,10 @@ public class JWTServiceImpl implements JWTService {
         final Claims claims=extractAllClaims(token);
         return claimsResolvers.apply(claims);
     }
-    private Key getSiginKey(){
-        return Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    private static final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+
+    private Key getSiginKey() {
+        return SECRET_KEY;
     }
     private Claims extractAllClaims(String token){
         return Jwts.parserBuilder().setSigningKey(getSiginKey()).build().parseClaimsJws(token).getBody();

@@ -3,15 +3,17 @@ package com.mypfeproject.pfe.entities;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.antlr.v4.runtime.misc.NotNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "utilisateurs", uniqueConstraints = {@UniqueConstraint(columnNames = "email")})
+@Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = "email")})
 @Getter
 @Setter
 public class User implements UserDetails {
@@ -19,16 +21,21 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "nom")
+    @Column(name = "nom",nullable = false)
     private String nom;
 
-    @Column(name = "prenom")
+    @Column(name = "prenom", nullable = false)
     private String prenom;
 
-    @Column(name = "email", unique = true)
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     private String password;
+    @Column(name = "date_naissance")
+    private String dateNaissance;
+
+    @Column(name = "numero_telephone")
+    private String numeroTelephone;
 
     @Column(name = "adresse_principale")
     private String adressePrincipale;
@@ -41,6 +48,9 @@ public class User implements UserDetails {
     private Role role ;
     @Column(name = "image_path")
     private String imagePath;
+    @Column(name = "email_verified")
+   
+
 
 
     @Override

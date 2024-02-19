@@ -47,12 +47,13 @@ public User signup(SignUpRequest signUpRequest){
 
 }
     private String saveImage(MultipartFile image) {
-        String imagePath = "src/main/resources/images/" + UUID.randomUUID() + image.getOriginalFilename();
+        String imageName = UUID.randomUUID() + image.getOriginalFilename();
+        String imagePath = "src/main/resources/static/images/" + imageName;
         File imageFile = new File(imagePath);
 
         try {
             FileUtils.writeByteArrayToFile(imageFile, image.getBytes());
-            return imagePath;
+            return "/images/"+imageName;
         } catch (IOException e) {
             e.printStackTrace();
             return null;

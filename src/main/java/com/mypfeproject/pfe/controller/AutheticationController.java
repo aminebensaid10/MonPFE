@@ -61,8 +61,8 @@ public ResponseEntity<JwtAuthenticationResponse>signin(@RequestBody SigninReques
     public ResponseEntity<User> getProfile(@AuthenticationPrincipal UserDetails userDetails) {
         if (userDetails != null) {
             String userEmail = userDetails.getUsername();
-            User utilisateurAuthentifie = authenticationService.getAuthenticatedUser(userEmail);
-            return ResponseEntity.ok(utilisateurAuthentifie);
+            User authenticatedUser = authenticationService.getAuthenticatedUser(userEmail);
+            return ResponseEntity.ok(authenticatedUser);
         } else {
             // Gérer le cas où userDetails est null
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

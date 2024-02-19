@@ -27,7 +27,7 @@ private final UserService userService ;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http.csrf(AbstractHttpConfigurer::disable)
-            .authorizeHttpRequests(request -> request.requestMatchers("/api/v1/auth/**","/api/v1/**").permitAll()
+            .authorizeHttpRequests(request -> request.requestMatchers("/api/v1/auth/**","/api/v1/**","/images/**").permitAll()
                     .requestMatchers("/api/v1/gestionnaireRH").hasAnyAuthority(Role.GESTIONNAIRERH.name())
                     .requestMatchers("/api/v1/gestionnairePAIE").hasAnyAuthority(Role.GESTIONNAIREPAIE.name())
                     .requestMatchers("/api/v1/collaborateur").hasAnyAuthority(Role.COLLABORATEUR.name())

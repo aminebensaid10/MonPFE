@@ -1,5 +1,6 @@
 package com.mypfeproject.pfe.dto;
 
+import com.mypfeproject.pfe.entities.User;
 import lombok.Data;
 
 import java.util.Date;
@@ -13,4 +14,7 @@ public class DemandeCompositionFamilialeDto {
     private String lienParente;
     private String justificatif;
     private String commentaire;
+    private boolean valide  ;
+
+    private User collaborateur;
 }

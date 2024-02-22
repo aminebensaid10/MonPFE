@@ -28,6 +28,11 @@ public class DemandeAjoutFamilleServiceImpl implements DemandeAjoutFamilleServic
         if (authentication != null && authentication.getPrincipal() instanceof User) {
             User collaborateur = (User) authentication.getPrincipal();
             demande.setCollaborateur(collaborateur);
+            MembreFamille membreFamille = demande.getMembreFamille();
+            if (membreFamille != null) {
+                membreFamille.setCollaborateur(collaborateur);
+            }
+
         }
 
         demande.setEtat("En cours");

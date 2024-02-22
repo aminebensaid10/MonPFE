@@ -36,4 +36,10 @@ public class MembreFamille {
 
     @Column(name = "commentaire")
     private String commentaire;
+    @Column(name = "valide")
+    private boolean valide = false ;
+    @ManyToOne
+    @JoinColumn(name = "collaborateur_id")
+    private User collaborateur;
+
 }

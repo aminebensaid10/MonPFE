@@ -1,9 +1,11 @@
 package com.mypfeproject.pfe.controller;
 
 import com.mypfeproject.pfe.dto.DemandeCompositionFamilialeDto;
+import com.mypfeproject.pfe.entities.MembreFamille;
 import com.mypfeproject.pfe.entities.User;
 import com.mypfeproject.pfe.services.DemandeAjoutFamilleService;
 import com.mypfeproject.pfe.services.DemandeCompositionFamilialeService;
+import com.mypfeproject.pfe.services.MembreFamilleService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +17,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
 
@@ -25,6 +29,8 @@ public class CollaborateurController {
 
     @Autowired
     private final DemandeCompositionFamilialeService demandeCompositionFamilialeService;
+    @Autowired
+    private final MembreFamilleService membreFamilleService;
     @GetMapping
     public ResponseEntity<String> sayHello(){
         return ResponseEntity.ok("Hi Collaborateur");
@@ -52,8 +58,16 @@ public class CollaborateurController {
             logger.error("Erreur lors de la création de la demande de composition familiale.", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+
     }
 
 
+    // Dans CollaborateurController
+    @GetMapping("/membres")
+    @PreAuthorize("hasAnyAuthority('COLLABORATEUR')")
+    public ResponseEntity<List<MembreFamille>> getMembresParCollaborateur(@AuthenticationPrincipal User collaborateur) {
+        List<MembreFamille> membres = membreFamilleService.getMembresParCollaborateur(collaborateur);
+        return ResponseEntity.ok(membres);
+    }
 
 }

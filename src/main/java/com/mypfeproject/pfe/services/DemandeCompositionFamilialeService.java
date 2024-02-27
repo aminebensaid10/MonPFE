@@ -9,4 +9,6 @@ import java.util.List;
 
 public interface DemandeCompositionFamilialeService {
     void creerDemandeCompositionFamiliale(User collaborateur, DemandeCompositionFamilialeDto demandeDTO) ;
+    List<Demande> getDemandesParCollaborateur(User collaborateur);
+
 }

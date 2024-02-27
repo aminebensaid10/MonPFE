@@ -1,6 +1,7 @@
 package com.mypfeproject.pfe.controller;
 
 import com.mypfeproject.pfe.dto.DemandeCompositionFamilialeDto;
+import com.mypfeproject.pfe.entities.Demande;
 import com.mypfeproject.pfe.entities.MembreFamille;
 import com.mypfeproject.pfe.entities.User;
 import com.mypfeproject.pfe.services.DemandeAjoutFamilleService;
@@ -62,12 +63,17 @@ public class CollaborateurController {
     }
 
 
-    // Dans CollaborateurController
     @GetMapping("/membres")
     @PreAuthorize("hasAnyAuthority('COLLABORATEUR')")
     public ResponseEntity<List<MembreFamille>> getMembresParCollaborateur(@AuthenticationPrincipal User collaborateur) {
         List<MembreFamille> membres = membreFamilleService.getMembresParCollaborateur(collaborateur);
         return ResponseEntity.ok(membres);
+    }
+    @GetMapping("/demandes")
+    @PreAuthorize("hasAnyAuthority('COLLABORATEUR')")
+    public ResponseEntity<List<Demande>> getDemandesParCollaborateur(@AuthenticationPrincipal User collaborateur) {
+        List<Demande> demandes = demandeCompositionFamilialeService.getDemandesParCollaborateur(collaborateur);
+        return ResponseEntity.ok(demandes);
     }
 
 }

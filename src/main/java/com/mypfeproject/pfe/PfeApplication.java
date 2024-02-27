@@ -19,14 +19,14 @@ private UserRepository userRepository ;
 
 	public void run(String... args){
 		User gestionnaireRHAccount=userRepository.findByRole(Role.GESTIONNAIRERH);
-		if(null ==gestionnaireRHAccount){
+		/*if(null ==gestionnaireRHAccount){
 			User user = new User();
-			user.setEmail("gestionnaireRH@gmail.com");
+			user.setEmail("testeur@gmail.com");
 			user.setNom("gestionnaireRH");
 			user.setPrenom("gestionnaireRH");
 		    user.setRole(Role.GESTIONNAIRERH);
 	        user.setPassword(new BCryptPasswordEncoder().encode("admin"));
 			userRepository.save(user);
-		}
+		}*/
 	}
 }

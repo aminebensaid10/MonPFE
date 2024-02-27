@@ -21,7 +21,6 @@ public class MembreFamilleServiceImpl implements MembreFamilleService {
     public void creerMembreFamille(MembreFamille membreFamille) {
         membreFamilleRepository.save(membreFamille);
     }
-    // Dans MembreFamilleService
     public List<MembreFamille> getMembresParCollaborateur(User collaborateur) {
         return membreFamilleRepository.findByCollaborateurAndValideTrue(collaborateur);
     }

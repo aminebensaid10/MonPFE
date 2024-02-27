@@ -8,6 +8,11 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 @Service
 public class GestionnaireRhServiceImpl implements GestionnaireRhService {
     @Autowired
@@ -31,4 +36,32 @@ public class GestionnaireRhServiceImpl implements GestionnaireRhService {
             }
         }
     }
+    @Override
+    @Transactional
+    public void rejeterDemande(Long demandeId) {
+        Demande demande = demandeAjoutFamilleRepository.findById(demandeId).orElse(null);
+
+        if (demande != null && "En cours".equals(demande.getEtat())) {
+            demande.setEtat("Invalide");
+            demandeAjoutFamilleRepository.save(demande);
+
+            MembreFamille membreFamille = demande.getMembreFamille();
+            if (membreFamille != null) {
+                membreFamille.setValide(true);
+                membreFamilleService.creerMembreFamille(membreFamille);
+            }
+        }
+    }
+    @Override
+    public Map<Long, List<Demande>> getDemandesGroupedByCollaborateur() {
+        List<Demande> toutesDemandes = demandeAjoutFamilleRepository.findAll();
+
+        return toutesDemandes.stream()
+                .collect(Collectors.groupingBy(demande -> demande.getCollaborateur().getId()));
+    }
+    @Override
+    public Optional<Demande> getDemandeById(Long demandeId) {
+        return demandeAjoutFamilleRepository.findById(demandeId);
+    }
+
 }

@@ -4,6 +4,7 @@ import com.mypfeproject.pfe.dto.DemandeCompositionFamilialeDto;
 import com.mypfeproject.pfe.entities.Demande;
 import com.mypfeproject.pfe.entities.MembreFamille;
 import com.mypfeproject.pfe.entities.User;
+import com.mypfeproject.pfe.repository.DemandeAjoutFamilleRepository;
 import com.mypfeproject.pfe.repository.MembreFamilleRepository;
 import com.mypfeproject.pfe.services.DemandeAjoutFamilleService;
 import com.mypfeproject.pfe.services.DemandeCompositionFamilialeService;
@@ -27,6 +28,8 @@ public class DemandeCompositionFamilialeServiceImpl implements DemandeCompositio
 
     @Autowired
     AuthenticationServiceImpl authenticationService;
+    @Autowired
+    DemandeAjoutFamilleRepository demandeAjoutFamilleRepository ;
 
     @Override
     public void creerDemandeCompositionFamiliale(User collaborateur, DemandeCompositionFamilialeDto demandeDTO) {
@@ -47,6 +50,10 @@ public class DemandeCompositionFamilialeServiceImpl implements DemandeCompositio
 
             demandeAjoutFamilleService.creerDemandeAjoutFamille(demandeAjoutFamille);
 
+    }
+    @Override
+    public List<Demande> getDemandesParCollaborateur(User collaborateur) {
+        return demandeAjoutFamilleRepository.findByCollaborateur(collaborateur);
     }
 
 

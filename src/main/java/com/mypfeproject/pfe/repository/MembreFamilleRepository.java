@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface MembreFamilleRepository extends JpaRepository<MembreFamille,Long> {
-    List<MembreFamille> findByCollaborateurAndValideTrue(User collaborateur);
+    List<MembreFamille> findByCollaborateurAndValideTrueAndIsUpdatedNotIn(User collaborateur, List<String> excludedValues);
+    MembreFamille getMembreById(Long id);
+
 
 }

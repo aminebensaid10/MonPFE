@@ -1,5 +1,6 @@
 package com.mypfeproject.pfe.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mypfeproject.pfe.entities.User;
 import lombok.Data;
 
@@ -15,6 +16,8 @@ public class DemandeCompositionFamilialeDto {
     private String justificatif;
     private String commentaire;
     private boolean valide  ;
+    private String isUpdated = "Pas encore";
 
+    @JsonIgnore
     private User collaborateur;
 }

@@ -39,5 +39,22 @@ public class DemandeAjoutFamilleServiceImpl implements DemandeAjoutFamilleServic
         demande.setTypeDemande("Ajout membre famille");
         demandeAjoutFamilleRepository.save(demande);
     }
+    @Override
+    public void creerDemandeModifcationFamille(Demande demande) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof User) {
+            User collaborateur = (User) authentication.getPrincipal();
+            demande.setCollaborateur(collaborateur);
+            MembreFamille membreFamille = demande.getMembreFamille();
+            if (membreFamille != null) {
+                membreFamille.setCollaborateur(collaborateur);
+            }
+
+        }
+
+        demande.setEtat("En cours");
+        demande.setTypeDemande("Modification membre famille");
+        demandeAjoutFamilleRepository.save(demande);
+    }
 
 }

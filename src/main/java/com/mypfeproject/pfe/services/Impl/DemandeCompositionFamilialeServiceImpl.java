@@ -39,7 +39,6 @@ public class DemandeCompositionFamilialeServiceImpl implements DemandeCompositio
         membreFamille.setSexe(demandeDTO.getSexe());
         membreFamille.setDateNaissance(demandeDTO.getDateNaissance());
         membreFamille.setLienParente(demandeDTO.getLienParente());
-        membreFamille.setJustificatif(demandeDTO.getJustificatif());
         membreFamille.setCommentaire(demandeDTO.getCommentaire());
 
         membreFamilleService.creerMembreFamille(membreFamille);
@@ -54,6 +53,31 @@ public class DemandeCompositionFamilialeServiceImpl implements DemandeCompositio
     @Override
     public List<Demande> getDemandesParCollaborateur(User collaborateur) {
         return demandeAjoutFamilleRepository.findByCollaborateur(collaborateur);
+    }
+    @Override
+    public void creerDemandeModification(User collaborateur, Long membreId, DemandeCompositionFamilialeDto demandeDTO) {
+        MembreFamille membreFamille = membreFamilleService.getMembreParId(membreId);
+
+        membreFamille.setNomMembre(demandeDTO.getNomMembre());
+        membreFamille.setPrenomMembre(demandeDTO.getPrenomMembre());
+        membreFamille.setSexe(demandeDTO.getSexe());
+        membreFamille.setDateNaissance(demandeDTO.getDateNaissance());
+        membreFamille.setLienParente(demandeDTO.getLienParente());
+        membreFamille.setCommentaire(demandeDTO.getCommentaire());
+        membreFamille.setIsUpdated("En cours de traitement");
+
+
+
+
+        membreFamilleService.mettreAJourMembreFamille(membreId, demandeDTO);
+
+        Demande demandeModification = new Demande();
+        demandeModification.setMembreFamille(membreFamille);
+        demandeModification.setCollaborateur(collaborateur);
+        demandeModification.setEtat("En cours");
+        demandeModification.setTypeDemande("Modification en cours");
+
+        demandeAjoutFamilleService.creerDemandeModifcationFamille(demandeModification);
     }
 
 

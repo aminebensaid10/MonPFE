@@ -75,5 +75,38 @@ public class CollaborateurController {
         List<Demande> demandes = demandeCompositionFamilialeService.getDemandesParCollaborateur(collaborateur);
         return ResponseEntity.ok(demandes);
     }
+    @PostMapping("/modifier-membre-et-creer-demande-modification/{membreId}")
+    @PreAuthorize("hasAnyAuthority('COLLABORATEUR')")
+    public ResponseEntity<Void> modifierMembreEtCreerDemandeModification(
+            @AuthenticationPrincipal User collaborateur,
+            @PathVariable Long membreId,
+            @RequestBody DemandeCompositionFamilialeDto demandeDTO
+    ) {
+        try {
+            if (collaborateur != null) {
+                logger.info("Demande de modification de membre reçue. Collaborateur : {}", collaborateur.getUsername());
+            } else {
+                logger.warn("Demande de modification de membre reçue. Collaborateur est null.");
+            }
+
+            demandeCompositionFamilialeService.creerDemandeModification(collaborateur, membreId, demandeDTO);
+
+            logger.info("Demande de modification de membre et création de la demande de modification réussies.");
+
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e) {
+            logger.error("Erreur lors de la modification de membre et création de la demande de modification.", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    @GetMapping("/membres/{membreId}")
+    @PreAuthorize("hasAnyAuthority('COLLABORATEUR')")
+    public ResponseEntity<MembreFamille> getMembreById(
+            @AuthenticationPrincipal User collaborateur,
+            @PathVariable Long membreId
+    ) {
+        MembreFamille membre = membreFamilleService.getMembreById(membreId);
+        return ResponseEntity.ok(membre);
+    }
 
 }

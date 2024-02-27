@@ -32,10 +32,14 @@ public class GestionnaireRhServiceImpl implements GestionnaireRhService {
             MembreFamille membreFamille = demande.getMembreFamille();
             if (membreFamille != null) {
                 membreFamille.setValide(true);
+                membreFamille.setIsUpdated("membre mis a jour");
+
                 membreFamilleService.creerMembreFamille(membreFamille);
             }
         }
     }
+
+
     @Override
     @Transactional
     public void rejeterDemande(Long demandeId) {
@@ -47,7 +51,8 @@ public class GestionnaireRhServiceImpl implements GestionnaireRhService {
 
             MembreFamille membreFamille = demande.getMembreFamille();
             if (membreFamille != null) {
-                membreFamille.setValide(true);
+                membreFamille.setIsUpdated("membre ne pas mis a jour");
+
                 membreFamilleService.creerMembreFamille(membreFamille);
             }
         }
@@ -63,5 +68,6 @@ public class GestionnaireRhServiceImpl implements GestionnaireRhService {
     public Optional<Demande> getDemandeById(Long demandeId) {
         return demandeAjoutFamilleRepository.findById(demandeId);
     }
+
 
 }

@@ -99,6 +99,29 @@ public class CollaborateurController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+    @PostMapping("/creer-demande-suppression/{membreId}")
+    @PreAuthorize("hasAnyAuthority('COLLABORATEUR')")
+    public ResponseEntity<Void> creerDemandeSuppression(
+            @AuthenticationPrincipal User collaborateur,
+            @PathVariable Long membreId
+    ) {
+        try {
+            if (collaborateur != null) {
+                logger.info("Demande de suppression de membre reçue. Collaborateur : {}", collaborateur.getUsername());
+            } else {
+                logger.warn("Demande de suppression de membre reçue. Collaborateur est null.");
+            }
+
+            demandeCompositionFamilialeService.creerDemandeSuppression(collaborateur, membreId);
+
+            logger.info("Demande de suppression de membre créée avec succès.");
+
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e) {
+            logger.error("Erreur lors de la création de la demande de suppression de membre.", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
     @GetMapping("/membres/{membreId}")
     @PreAuthorize("hasAnyAuthority('COLLABORATEUR')")
     public ResponseEntity<MembreFamille> getMembreById(

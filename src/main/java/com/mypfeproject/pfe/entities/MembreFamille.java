@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Data
@@ -46,5 +47,6 @@ public class MembreFamille {
     @ManyToOne
     @JoinColumn(name = "collaborateur_id")
     private User collaborateur;
+
 
 }

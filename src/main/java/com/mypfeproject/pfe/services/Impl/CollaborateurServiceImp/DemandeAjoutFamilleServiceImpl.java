@@ -1,4 +1,4 @@
-package com.mypfeproject.pfe.services.Impl;
+package com.mypfeproject.pfe.services.Impl.CollaborateurServiceImp;
 
 import com.mypfeproject.pfe.dto.DemandeCompositionFamilialeDto;
 import com.mypfeproject.pfe.entities.Demande;
@@ -7,6 +7,7 @@ import com.mypfeproject.pfe.entities.User;
 import com.mypfeproject.pfe.repository.DemandeAjoutFamilleRepository;
 import com.mypfeproject.pfe.services.DemandeAjoutFamilleService;
 import com.mypfeproject.pfe.services.MembreFamilleService;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -55,6 +56,13 @@ public class DemandeAjoutFamilleServiceImpl implements DemandeAjoutFamilleServic
         demande.setEtat("En cours");
         demande.setTypeDemande("Modification membre famille");
         demandeAjoutFamilleRepository.save(demande);
+    }
+    @Override
+    @Transactional
+    public void creerDemandeSuppressionFamille(Demande demande) {
+        if (demande != null) {
+            demandeAjoutFamilleRepository.save(demande);
+        }
     }
 
 }

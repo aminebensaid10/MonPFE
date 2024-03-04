@@ -4,6 +4,7 @@ import com.mypfeproject.pfe.entities.Demande;
 import com.mypfeproject.pfe.entities.MembreFamille;
 import com.mypfeproject.pfe.repository.DemandeAjoutFamilleRepository;
 import com.mypfeproject.pfe.services.GestionnaireRhService;
+import com.mypfeproject.pfe.services.Impl.CollaborateurServiceImp.MembreFamilleServiceImpl;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,12 +33,27 @@ public class GestionnaireRhServiceImpl implements GestionnaireRhService {
             MembreFamille membreFamille = demande.getMembreFamille();
             if (membreFamille != null) {
                 membreFamille.setValide(true);
-                membreFamille.setIsUpdated("membre mis a jour");
 
-                membreFamilleService.creerMembreFamille(membreFamille);
+                if ("Modification membre famille".equals(demande.getTypeDemande())) {
+                    membreFamille.setIsUpdated("membre mis a jour");
+
+                    membreFamilleService.creerMembreFamille(membreFamille);
+                } else if ("Suppression membre famille".equals(demande.getTypeDemande())) {
+                    List<Demande> demandesAssociees = demandeAjoutFamilleRepository.findByMembreFamille(membreFamille);
+
+                    for (Demande demandeAssociee : demandesAssociees) {
+                        demandeAjoutFamilleRepository.delete(demandeAssociee);
+                    }
+
+                    membreFamilleService.supprimerMembreFamille(membreFamille.getId());
+
+
+                }
+
             }
         }
     }
+
 
 
     @Override
@@ -51,12 +67,15 @@ public class GestionnaireRhServiceImpl implements GestionnaireRhService {
 
             MembreFamille membreFamille = demande.getMembreFamille();
             if (membreFamille != null) {
-                membreFamille.setIsUpdated("membre ne pas mis a jour");
+                if ("Modification membre famille".equals(demande.getTypeDemande())) {
+                    membreFamille.setIsUpdated("membre ne pas mis a jour");
 
-                membreFamilleService.creerMembreFamille(membreFamille);
+                    membreFamilleService.creerMembreFamille(membreFamille);
+                }
             }
         }
     }
+
     @Override
     public Map<Long, List<Demande>> getDemandesGroupedByCollaborateur() {
         List<Demande> toutesDemandes = demandeAjoutFamilleRepository.findAll();

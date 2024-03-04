@@ -1,4 +1,4 @@
-package com.mypfeproject.pfe.services.Impl;
+package com.mypfeproject.pfe.services.Impl.CollaborateurServiceImp;
 
 import com.mypfeproject.pfe.dto.DemandeCompositionFamilialeDto;
 import com.mypfeproject.pfe.entities.MembreFamille;
@@ -7,6 +7,7 @@ import com.mypfeproject.pfe.repository.MembreFamilleRepository;
 import com.mypfeproject.pfe.services.MembreFamilleService;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
@@ -41,6 +42,17 @@ public class MembreFamilleServiceImpl implements MembreFamilleService {
         MembreFamille membreFamille = getMembreParId(membreId);
         membreFamilleRepository.save(membreFamille);
     }
+    @Override
+    @Transactional
+    public void supprimerMembreFamille(Long membreId) {
+        MembreFamille membreFamille = membreFamilleRepository.findById(membreId).orElse(null);
+
+        if (membreFamille != null) {
+
+            membreFamilleRepository.delete(membreFamille);
+        }
+    }
+
 
     @Override
     public MembreFamille getMembreById(Long id) {

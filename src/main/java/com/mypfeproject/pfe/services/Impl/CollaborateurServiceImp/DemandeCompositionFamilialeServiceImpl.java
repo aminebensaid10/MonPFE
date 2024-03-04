@@ -1,4 +1,4 @@
-package com.mypfeproject.pfe.services.Impl;
+package com.mypfeproject.pfe.services.Impl.CollaborateurServiceImp;
 
 import com.mypfeproject.pfe.dto.DemandeCompositionFamilialeDto;
 import com.mypfeproject.pfe.entities.Demande;
@@ -8,6 +8,7 @@ import com.mypfeproject.pfe.repository.DemandeAjoutFamilleRepository;
 import com.mypfeproject.pfe.repository.MembreFamilleRepository;
 import com.mypfeproject.pfe.services.DemandeAjoutFamilleService;
 import com.mypfeproject.pfe.services.DemandeCompositionFamilialeService;
+import com.mypfeproject.pfe.services.Impl.AuthenticationServiceImpl;
 import com.mypfeproject.pfe.services.MembreFamilleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -81,7 +82,20 @@ public class DemandeCompositionFamilialeServiceImpl implements DemandeCompositio
     }
 
 
+    @Override
+    public void creerDemandeSuppression(User collaborateur, Long membreId) {
+        MembreFamille membreFamille = membreFamilleService.getMembreParId(membreId);
 
+        if (membreFamille != null) {
+            Demande demandeSuppression = new Demande();
+            demandeSuppression.setMembreFamille(membreFamille);
+            demandeSuppression.setCollaborateur(collaborateur);
+            demandeSuppression.setEtat("En cours");
+            demandeSuppression.setTypeDemande("Suppression membre famille");
+
+            demandeAjoutFamilleService.creerDemandeSuppressionFamille(demandeSuppression);
+        }
+    }
 
 
 }

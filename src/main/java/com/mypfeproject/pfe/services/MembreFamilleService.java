@@ -12,4 +12,5 @@ public interface MembreFamilleService {
     MembreFamille getMembreParId(Long id) ;
     void mettreAJourMembreFamille(Long membreId, DemandeCompositionFamilialeDto demandeDTO) ;
     MembreFamille getMembreById(Long id);
+    void supprimerMembreFamille(Long membreId) ;
 }

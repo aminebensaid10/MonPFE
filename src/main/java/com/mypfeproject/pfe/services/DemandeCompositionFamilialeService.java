@@ -11,4 +11,5 @@ public interface DemandeCompositionFamilialeService {
     void creerDemandeCompositionFamiliale(User collaborateur, DemandeCompositionFamilialeDto demandeDTO) ;
     List<Demande> getDemandesParCollaborateur(User collaborateur);
     public void creerDemandeModification(User collaborateur, Long membreId, DemandeCompositionFamilialeDto demandeDTO);
+    public void creerDemandeSuppression(User collaborateur, Long membreId) ;
 }

@@ -13,5 +13,7 @@ public interface DemandeAjoutFamilleRepository extends JpaRepository<Demande,Lon
     @Query("SELECT d.collaborateur.id, d FROM Demande d GROUP BY d.collaborateur.id")
     Map<Long, List<Demande>> getDemandesGroupedByCollaborateur();
     List<Demande> findByCollaborateur(User collaborateur);
+    List<Demande> findByMembreFamille(MembreFamille membreFamille);
+
 
 }

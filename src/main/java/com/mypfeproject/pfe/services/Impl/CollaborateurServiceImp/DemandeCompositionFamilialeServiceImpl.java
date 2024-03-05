@@ -3,20 +3,17 @@ package com.mypfeproject.pfe.services.Impl.CollaborateurServiceImp;
 import com.mypfeproject.pfe.dto.DemandeCompositionFamilialeDto;
 import com.mypfeproject.pfe.entities.Demande;
 import com.mypfeproject.pfe.entities.MembreFamille;
+import com.mypfeproject.pfe.entities.Notification;
 import com.mypfeproject.pfe.entities.User;
 import com.mypfeproject.pfe.repository.DemandeAjoutFamilleRepository;
-import com.mypfeproject.pfe.repository.MembreFamilleRepository;
 import com.mypfeproject.pfe.services.DemandeAjoutFamilleService;
 import com.mypfeproject.pfe.services.DemandeCompositionFamilialeService;
 import com.mypfeproject.pfe.services.Impl.AuthenticationServiceImpl;
 import com.mypfeproject.pfe.services.MembreFamilleService;
+import com.mypfeproject.pfe.services.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -31,6 +28,8 @@ public class DemandeCompositionFamilialeServiceImpl implements DemandeCompositio
     AuthenticationServiceImpl authenticationService;
     @Autowired
     DemandeAjoutFamilleRepository demandeAjoutFamilleRepository ;
+    @Autowired
+    private NotificationService notificationService;
 
     @Override
     public void creerDemandeCompositionFamiliale(User collaborateur, DemandeCompositionFamilialeDto demandeDTO) {
@@ -47,8 +46,14 @@ public class DemandeCompositionFamilialeServiceImpl implements DemandeCompositio
         Demande demandeAjoutFamille = new Demande();
         demandeAjoutFamille.setMembreFamille(membreFamille);
         demandeAjoutFamille.setCollaborateur(collaborateur);
+        demandeAjoutFamilleService.creerDemandeAjoutFamille(demandeAjoutFamille);
 
-            demandeAjoutFamilleService.creerDemandeAjoutFamille(demandeAjoutFamille);
+        Notification notification = new Notification();
+        notification.setCollaborateur(collaborateur);
+        notification.setMessage("Nouvelle demande d'ajout de membre de famille créée");
+        notification.setRead(false);
+        notification.setDemande(demandeAjoutFamille);
+        notificationService.creerNotification(notification);
 
     }
     @Override
@@ -79,6 +84,14 @@ public class DemandeCompositionFamilialeServiceImpl implements DemandeCompositio
         demandeModification.setTypeDemande("Modification en cours");
 
         demandeAjoutFamilleService.creerDemandeModifcationFamille(demandeModification);
+
+
+        Notification notification = new Notification();
+        notification.setCollaborateur(collaborateur);
+        notification.setMessage("Nouvelle demande de modfication de membre de famille créée");
+        notification.setRead(false);
+        notification.setDemande(demandeModification);
+        notificationService.creerNotification(notification);
     }
 
 
@@ -94,6 +107,14 @@ public class DemandeCompositionFamilialeServiceImpl implements DemandeCompositio
             demandeSuppression.setTypeDemande("Suppression membre famille");
 
             demandeAjoutFamilleService.creerDemandeSuppressionFamille(demandeSuppression);
+
+            Notification notification = new Notification();
+            notification.setCollaborateur(collaborateur);
+            notification.setMessage("Nouvelle demande de suppression de membre de famille créée");
+            notification.setRead(false);
+            notification.setDemande(demandeSuppression);
+            notificationService.creerNotification(notification);
+
         }
     }
 

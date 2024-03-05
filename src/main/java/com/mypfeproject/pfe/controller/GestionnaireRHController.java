@@ -1,6 +1,7 @@
 package com.mypfeproject.pfe.controller;
 
 import com.mypfeproject.pfe.entities.Demande;
+import com.mypfeproject.pfe.entities.Notification;
 import com.mypfeproject.pfe.services.GestionnaireRhService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +68,23 @@ public class GestionnaireRHController {
         return demande.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+    @GetMapping("/notification")
+    @PreAuthorize("hasAnyAuthority('GESTIONNAIRERH')")
+    public ResponseEntity<List<Notification>> getAllNotifications() {
+        try {
+            List<Notification> notifications = gestionnaireRhService.getAllNotifications();
+            return ResponseEntity.ok(notifications);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    @GetMapping("/unreadnotification")
+    @PreAuthorize("hasAnyAuthority('GESTIONNAIRERH')")
 
+    public ResponseEntity<List<Notification>> getAllUnreadNotifications() {
+        List<Notification> unreadNotifications = gestionnaireRhService.getAllUnreadNotifications();
+        return new ResponseEntity<>(unreadNotifications, HttpStatus.OK);
+    }
 
 }
 

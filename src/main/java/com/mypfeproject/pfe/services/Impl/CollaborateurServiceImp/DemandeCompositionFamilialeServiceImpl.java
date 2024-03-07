@@ -12,9 +12,17 @@ import com.mypfeproject.pfe.services.Impl.AuthenticationServiceImpl;
 import com.mypfeproject.pfe.services.MembreFamilleService;
 import com.mypfeproject.pfe.services.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class DemandeCompositionFamilialeServiceImpl implements DemandeCompositionFamilialeService {
@@ -30,16 +38,32 @@ public class DemandeCompositionFamilialeServiceImpl implements DemandeCompositio
     DemandeAjoutFamilleRepository demandeAjoutFamilleRepository ;
     @Autowired
     private NotificationService notificationService;
+    @Value("${upload.path}")
+    private String uploadPath;
 
     @Override
     public void creerDemandeCompositionFamiliale(User collaborateur, DemandeCompositionFamilialeDto demandeDTO) {
         MembreFamille membreFamille = new MembreFamille();
         membreFamille.setNomMembre(demandeDTO.getNomMembre());
         membreFamille.setPrenomMembre(demandeDTO.getPrenomMembre());
-        membreFamille.setSexe(demandeDTO.getSexe());
+       membreFamille.setSexe(demandeDTO.getSexe());
         membreFamille.setDateNaissance(demandeDTO.getDateNaissance());
         membreFamille.setLienParente(demandeDTO.getLienParente());
         membreFamille.setCommentaire(demandeDTO.getCommentaire());
+
+        if (demandeDTO.getJustificatifFile() != null) {
+            String fileName = UUID.randomUUID().toString() + "_" + demandeDTO.getJustificatifFile().getOriginalFilename();
+            Path filePath = Paths.get(uploadPath).resolve(fileName);
+
+
+            try (InputStream inputStream = demandeDTO.getJustificatifFile().getInputStream()) {
+                Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                throw new RuntimeException("Erreur lors de la copie du fichier justificatif vers la destination", e);
+            }
+
+            membreFamille.setJustificatifPath(fileName);
+        }
 
         membreFamilleService.creerMembreFamille(membreFamille);
 
@@ -54,7 +78,6 @@ public class DemandeCompositionFamilialeServiceImpl implements DemandeCompositio
         notification.setRead(false);
         notification.setDemande(demandeAjoutFamille);
         notificationService.creerNotification(notification);
-
     }
     @Override
     public List<Demande> getDemandesParCollaborateur(User collaborateur) {

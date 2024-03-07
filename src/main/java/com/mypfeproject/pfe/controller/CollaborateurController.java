@@ -12,11 +12,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -37,12 +39,14 @@ public class CollaborateurController {
         return ResponseEntity.ok("Hi Collaborateur");
     }
 
-    @PostMapping("/creer-demande-composition-familiale")
+    @PostMapping(value = "/creer-demande-composition-familiale")
     @PreAuthorize("hasAnyAuthority('COLLABORATEUR')")
     public ResponseEntity<Void> creerDemandeCompositionFamiliale(
             @AuthenticationPrincipal User collaborateur,
-            @RequestBody DemandeCompositionFamilialeDto demandeDTO
-    ) {
+            @ModelAttribute DemandeCompositionFamilialeDto demandeDTO,
+            @RequestPart(value = "justificatifFile", required = false) MultipartFile justificatifFile
+    )
+    {
         try {
             if (collaborateur != null) {
                 logger.info("Demande de composition familiale reçue. Collaborateur : {}", collaborateur.getUsername());
@@ -53,6 +57,9 @@ public class CollaborateurController {
             demandeCompositionFamilialeService.creerDemandeCompositionFamiliale(collaborateur, demandeDTO);
 
             logger.info("Demande de composition familiale créée avec succès.");
+            demandeDTO.setJustificatifFile(justificatifFile);
+
+
 
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (Exception e) {

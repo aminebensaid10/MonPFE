@@ -1,5 +1,6 @@
 package com.mypfeproject.pfe;
 
+import com.mypfeproject.pfe.config.WebConfig;
 import com.mypfeproject.pfe.entities.Role;
 import com.mypfeproject.pfe.entities.User;
 import com.mypfeproject.pfe.repository.UserRepository;
@@ -7,9 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+
 @SpringBootApplication
+@Import(WebConfig.class)
+
 public class PfeApplication implements CommandLineRunner {
 @Autowired
 private UserRepository userRepository ;

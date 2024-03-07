@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 import java.util.List;
@@ -33,12 +34,15 @@ public class MembreFamille {
     private String lienParente;
 
 
-    @Column(name = "justificatif")
-    private byte[] justificatif;
+//   // private byte[] justificatif;
+
+    @Column(name = "justificatif_path")
+    private String justificatifPath;
+
 
 
     @Column(name = "commentaire")
-    private String commentaire;
+    private String commentaire; 
     @Column(name = "valide")
     private boolean valide = false ;
     @Column(name = "is_updated")

@@ -48,19 +48,20 @@ public User signup(SignUpRequest signUpRequest){
 }
     private String saveImage(MultipartFile image) {
         String imageName = UUID.randomUUID() + image.getOriginalFilename();
-        String imagePath = "src/main/resources/static/images/" + imageName;
+        String imagePath = "fichiers/" + imageName;
         File imageFile = new File(imagePath);
 
         try {
             FileUtils.writeByteArrayToFile(imageFile, image.getBytes());
-            return "/images/"+imageName;
+            return imageName;
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-public JwtAuthenticationResponse signin(SigninRequest signinRequest){
+
+    public JwtAuthenticationResponse signin(SigninRequest signinRequest){
 autheticationManager.authenticate(new UsernamePasswordAuthenticationToken(signinRequest.getEmail(),signinRequest.getPassword()));
     var user = userRepository.findByEmail(signinRequest.getEmail()).orElseThrow(()->new IllegalArgumentException("invalid email or password."));
     var jwt =jwtService.generateToken(user);

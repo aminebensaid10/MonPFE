@@ -40,9 +40,10 @@ public class MembreFamille {
     private String justificatifPath;
 
 
-
+    @Column(name = "image_path")
+    private String imagePath;
     @Column(name = "commentaire")
-    private String commentaire; 
+    private String commentaire;
     @Column(name = "valide")
     private boolean valide = false ;
     @Column(name = "is_updated")

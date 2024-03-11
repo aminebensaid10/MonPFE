@@ -17,6 +17,7 @@ public class DemandeCompositionFamilialeDto {
     private Date dateNaissance;
     private String lienParente;
     @JsonIgnore
+    private MultipartFile imageMembre;
 
     private MultipartFile justificatifFile;
 

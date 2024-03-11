@@ -11,10 +11,12 @@ import com.mypfeproject.pfe.services.DemandeCompositionFamilialeService;
 import com.mypfeproject.pfe.services.Impl.AuthenticationServiceImpl;
 import com.mypfeproject.pfe.services.MembreFamilleService;
 import com.mypfeproject.pfe.services.NotificationService;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -50,6 +52,18 @@ public class DemandeCompositionFamilialeServiceImpl implements DemandeCompositio
         membreFamille.setDateNaissance(demandeDTO.getDateNaissance());
         membreFamille.setLienParente(demandeDTO.getLienParente());
         membreFamille.setCommentaire(demandeDTO.getCommentaire());
+        if (demandeDTO.getImageMembre() != null) {
+            String imageFileName = UUID.randomUUID().toString() + "_" + demandeDTO.getImageMembre().getOriginalFilename();
+            Path imagePath = Paths.get(uploadPath).resolve(imageFileName);
+
+            try (InputStream imageInputStream = demandeDTO.getImageMembre().getInputStream()) {
+                Files.copy(imageInputStream, imagePath, StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                throw new RuntimeException("Erreur lors de la copie de l'image du membre vers la destination", e);
+            }
+
+            membreFamille.setImagePath(imageFileName);
+        }
 
         if (demandeDTO.getJustificatifFile() != null) {
             String fileName = UUID.randomUUID().toString() + "_" + demandeDTO.getJustificatifFile().getOriginalFilename();
@@ -94,6 +108,19 @@ public class DemandeCompositionFamilialeServiceImpl implements DemandeCompositio
         membreFamille.setLienParente(demandeDTO.getLienParente());
         membreFamille.setCommentaire(demandeDTO.getCommentaire());
         membreFamille.setIsUpdated("En cours de traitement");
+        if (demandeDTO.getImageMembre() != null) {
+            String imageName = UUID.randomUUID() + "_" + demandeDTO.getImageMembre().getOriginalFilename();
+            String imagePath = "fichiers/" + imageName;
+
+            try {
+                File targetFile = new File(imagePath);
+                FileUtils.writeByteArrayToFile(targetFile, demandeDTO.getImageMembre().getBytes());
+
+                membreFamille.setImagePath("/images/" + imageName);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
 
 

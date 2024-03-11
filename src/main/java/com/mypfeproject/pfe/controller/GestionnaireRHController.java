@@ -1,6 +1,7 @@
 package com.mypfeproject.pfe.controller;
 
 import com.mypfeproject.pfe.entities.Demande;
+import com.mypfeproject.pfe.entities.DemandeSituationFamiliale;
 import com.mypfeproject.pfe.entities.Notification;
 import com.mypfeproject.pfe.services.GestionnaireRhService;
 import lombok.RequiredArgsConstructor;
@@ -85,6 +86,17 @@ public class GestionnaireRHController {
         List<Notification> unreadNotifications = gestionnaireRhService.getAllUnreadNotifications();
         return new ResponseEntity<>(unreadNotifications, HttpStatus.OK);
     }
+    @GetMapping("/demandes-situation-familiale")
+    @PreAuthorize("hasAnyAuthority('GESTIONNAIRERH')")
+    public ResponseEntity<List<DemandeSituationFamiliale>> getAllDemandesSituationFamiliale() {
+        try {
+            List<DemandeSituationFamiliale> demandesSituationFamiliale = gestionnaireRhService.getAllDemandesSituationFamiliale();
+            return ResponseEntity.ok(demandesSituationFamiliale);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
 
 }
 

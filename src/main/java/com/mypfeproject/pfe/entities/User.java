@@ -42,14 +42,18 @@ public class User implements UserDetails {
     @Column(name = "adresse_principale")
     private String adressePrincipale;
 
-    @Column(name = "situation_familiale")
-    private String situationFamiliale;
+    @Enumerated(EnumType.STRING)
+    private SituationFamiliale situationFamiliale;
+
 
     @Column(name = "mode_de_transport")
     private String modeDeTransport;
     private Role role ;
     @Column(name = "image_path")
     private String imagePath;
+    @OneToMany(mappedBy = "collaborateur", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<DemandeSituationFamiliale> demandesSituationFamiliale;
 
 
 

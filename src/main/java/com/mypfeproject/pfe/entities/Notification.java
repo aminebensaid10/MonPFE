@@ -26,5 +26,8 @@ public class Notification {
     @ManyToOne
     @JoinColumn(name = "demande_id")
     private Demande demande;
+    @ManyToOne
+    @JoinColumn(name = "demandesituationfamiliale_id")
+    private DemandeSituationFamiliale demandesituationfamiliale;
 
 }

@@ -1,9 +1,11 @@
 package com.mypfeproject.pfe.services.Impl;
 
 import com.mypfeproject.pfe.entities.Demande;
+import com.mypfeproject.pfe.entities.DemandeSituationFamiliale;
 import com.mypfeproject.pfe.entities.MembreFamille;
 import com.mypfeproject.pfe.entities.Notification;
 import com.mypfeproject.pfe.repository.DemandeAjoutFamilleRepository;
+import com.mypfeproject.pfe.repository.DemandeSituationFamilialRepository;
 import com.mypfeproject.pfe.repository.NotificationRepository;
 import com.mypfeproject.pfe.services.GestionnaireRhService;
 import com.mypfeproject.pfe.services.Impl.CollaborateurServiceImp.MembreFamilleServiceImpl;
@@ -20,6 +22,8 @@ import java.util.stream.Collectors;
 public class GestionnaireRhServiceImpl implements GestionnaireRhService {
     @Autowired
     private DemandeAjoutFamilleRepository demandeAjoutFamilleRepository;
+    @Autowired
+    private DemandeSituationFamilialRepository demandeSituationFamilialRepository;
     @Autowired
     private MembreFamilleServiceImpl membreFamilleService;
     @Autowired
@@ -99,6 +103,11 @@ public class GestionnaireRhServiceImpl implements GestionnaireRhService {
         return toutesDemandes.stream()
                 .collect(Collectors.groupingBy(demande -> demande.getCollaborateur().getId()));
     }
+    @Override
+    public List<DemandeSituationFamiliale> getAllDemandesSituationFamiliale() {
+        return demandeSituationFamilialRepository.findAll();
+    }
+
     @Override
     public Optional<Demande> getDemandeById(Long demandeId) {
         return demandeAjoutFamilleRepository.findById(demandeId);

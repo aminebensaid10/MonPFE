@@ -175,6 +175,31 @@ public class CollaborateurController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+    @PostMapping("/creer-demande-modification-situation-familiale")
+    @PreAuthorize("hasAnyAuthority('COLLABORATEUR')")
+    public ResponseEntity<Void> creerDemandeModificationSituationFamiliale(
+            @AuthenticationPrincipal User collaborateur,
+            @ModelAttribute DemandeSituationFamilialeDTO demandeDTO,
+            @RequestPart(value = "justificatifSituationFamiliale", required = false) MultipartFile justificatifSituationFamiliale
+    ) {
+        try {
+            if (collaborateur != null) {
+                logger.info("Demande de modification de situation familiale reçue. Collaborateur : {}", collaborateur.getUsername());
+            } else {
+                logger.warn("Demande de modification de situation familiale reçue. Collaborateur est null.");
+            }
+
+            situationFamilialeService.creerDemandeModificationSituationFamiliale(collaborateur, demandeDTO);
+
+            logger.info("Demande de modification de situation familiale créée avec succès.");
+            demandeDTO.setJustificatifSituationFamiliale(justificatifSituationFamiliale);
+
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e) {
+            logger.error("Erreur lors de la création de la demande de modifcation de situation familiale.", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
     @GetMapping("/situation-familiale")
     @PreAuthorize("hasAnyAuthority('COLLABORATEUR')")
 
@@ -185,6 +210,28 @@ public class CollaborateurController {
             return ResponseEntity.ok(situationFamiliale);
         } else {
             return ResponseEntity.status(401).build();
+        }
+    }
+    @PostMapping("/creer-demande-suppression-situation-familiale")
+    @PreAuthorize("hasAnyAuthority('COLLABORATEUR')")
+    public ResponseEntity<Void> creerDemandeSuppressionSituationFamiliale(
+            @AuthenticationPrincipal User collaborateur
+    ) {
+        try {
+            if (collaborateur != null) {
+                logger.info("Demande de suppression de situation familiale reçue. Collaborateur : {}", collaborateur.getUsername());
+            } else {
+                logger.warn("Demande de suppression de situation familiale reçue. Collaborateur est null.");
+            }
+
+            situationFamilialeService.creerDemandeSuppressionSituationFamiliale(collaborateur);
+
+            logger.info("Demande de suppression de situation familiale créée avec succès.");
+
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e) {
+            logger.error("Erreur lors de la création de la demande de suppression de situation familiale.", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 

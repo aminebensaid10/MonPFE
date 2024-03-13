@@ -11,4 +11,6 @@ public interface SituationFamilialeService {
     void creerDemandeSituationFamiliale(User collaborateur, DemandeSituationFamilialeDTO demandeDTO) ;
     public String getSituationFamiliale(String userEmail) ;
     List<DemandeSituationFamiliale> getDemandesSituationParCollaborateur(User collaborateur);
+    void creerDemandeModificationSituationFamiliale(User collaborateur, DemandeSituationFamilialeDTO demandeDTO) ;
+    public void creerDemandeSuppressionSituationFamiliale(User collaborateur) ;
 }

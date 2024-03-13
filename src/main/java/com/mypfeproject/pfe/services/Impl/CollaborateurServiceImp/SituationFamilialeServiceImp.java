@@ -85,7 +85,7 @@ public class SituationFamilialeServiceImp implements SituationFamilialeService {
             if (user.isDemandeValidee()) {
                 return user.getSituationFamiliale().name();
             } else {
-                return "Demande non validée";
+                return "Non disponible pour le moment";
             }
         }
 
@@ -95,4 +95,69 @@ public class SituationFamilialeServiceImp implements SituationFamilialeService {
     public List<DemandeSituationFamiliale> getDemandesSituationParCollaborateur(User collaborateur) {
         return demandeSituationFamilialeRepository.findByCollaborateur(collaborateur);
     }
+    @Override
+    public void creerDemandeModificationSituationFamiliale(User collaborateur, DemandeSituationFamilialeDTO demandeDTO) {
+
+
+        DemandeSituationFamiliale demandeSituationFamiliale = new DemandeSituationFamiliale();
+        demandeSituationFamiliale.setCollaborateur(collaborateur);
+        demandeSituationFamiliale.setNouvelleSituation(demandeDTO.getNouvelleSituation());
+        demandeSituationFamiliale.setEtat("En cours");
+        demandeSituationFamiliale.setTypeDemande("Modification situation familiale");
+
+        if (demandeDTO.getJustificatifSituationFamiliale() != null) {
+            String justificatifFileName = UUID.randomUUID().toString() + "_" + demandeDTO.getJustificatifSituationFamiliale().getOriginalFilename();
+            Path justificatifPath = Paths.get(uploadPath).resolve(justificatifFileName);
+
+            try (InputStream justificatifInputStream = demandeDTO.getJustificatifSituationFamiliale().getInputStream()) {
+                Files.copy(justificatifInputStream, justificatifPath, StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                throw new RuntimeException("Erreur lors de la copie du justificatif vers la destination", e);
+            }
+
+            demandeSituationFamiliale.setJustificatifPath(justificatifFileName);
+        }
+
+        demandeSituationFamilialeRepository.save(demandeSituationFamiliale);
+        if ("Valide".equals(demandeSituationFamiliale.getEtat())) {
+            collaborateur.setSituationFamiliale(demandeDTO.getNouvelleSituation());
+            collaborateur.setDemandeValidee(false);
+
+            userRepository.save(collaborateur);
+        }
+        Notification notification = new Notification();
+        notification.setCollaborateur(collaborateur);
+        notification.setMessage("Nouvelle demande de modifcation de situation familiale créée");
+        notification.setRead(false);
+        notification.setDemandesituationfamiliale(demandeSituationFamiliale);
+        notificationService.creerNotification(notification);
+    }
+    @Override
+    public void creerDemandeSuppressionSituationFamiliale(User collaborateur) {
+
+
+        DemandeSituationFamiliale demandeSituationFamiliale = new DemandeSituationFamiliale();
+        demandeSituationFamiliale.setCollaborateur(collaborateur);
+        demandeSituationFamiliale.setEtat("En cours");
+        demandeSituationFamiliale.setTypeDemande("Suppression situation familiale");
+
+        demandeSituationFamilialeRepository.save(demandeSituationFamiliale);
+
+        if ("Valide".equals(demandeSituationFamiliale.getEtat())) {
+            collaborateur.setSituationFamiliale(null);
+            collaborateur.setDemandeValidee(false);
+            userRepository.save(collaborateur);
+        }
+
+        userRepository.save(collaborateur);
+
+        Notification notification = new Notification();
+        notification.setCollaborateur(collaborateur);
+        notification.setMessage("Nouvelle demande de suppression de situation familiale créée");
+        notification.setRead(false);
+        notification.setDemandesituationfamiliale(demandeSituationFamiliale);
+        notificationService.creerNotification(notification);
+    }
+
+
 }

@@ -54,6 +54,8 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "collaborateur", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<DemandeSituationFamiliale> demandesSituationFamiliale;
+    @Column(name = "demande_validée")
+    private boolean demandeValidee;
 
 
 

@@ -1,12 +1,10 @@
 package com.mypfeproject.pfe.services.Impl;
 
-import com.mypfeproject.pfe.entities.Demande;
-import com.mypfeproject.pfe.entities.DemandeSituationFamiliale;
-import com.mypfeproject.pfe.entities.MembreFamille;
-import com.mypfeproject.pfe.entities.Notification;
+import com.mypfeproject.pfe.entities.*;
 import com.mypfeproject.pfe.repository.DemandeAjoutFamilleRepository;
 import com.mypfeproject.pfe.repository.DemandeSituationFamilialRepository;
 import com.mypfeproject.pfe.repository.NotificationRepository;
+import com.mypfeproject.pfe.repository.UserRepository;
 import com.mypfeproject.pfe.services.GestionnaireRhService;
 import com.mypfeproject.pfe.services.Impl.CollaborateurServiceImp.MembreFamilleServiceImpl;
 import jakarta.transaction.Transactional;
@@ -28,6 +26,9 @@ public class GestionnaireRhServiceImpl implements GestionnaireRhService {
     private MembreFamilleServiceImpl membreFamilleService;
     @Autowired
     private NotificationRepository notificationRepository;
+    @Autowired
+    private UserRepository userRepository;
+
 
     @Override
     @Transactional
@@ -112,6 +113,10 @@ public class GestionnaireRhServiceImpl implements GestionnaireRhService {
     public Optional<Demande> getDemandeById(Long demandeId) {
         return demandeAjoutFamilleRepository.findById(demandeId);
     }
+    @Override
+    public Optional<DemandeSituationFamiliale> getDemandeSituationById(Long demandesituationfamiliale_id) {
+        return demandeSituationFamilialRepository.findById(demandesituationfamiliale_id);
+    }
 
 
 
@@ -125,6 +130,49 @@ public class GestionnaireRhServiceImpl implements GestionnaireRhService {
     @Override
     public List<Notification> getAllUnreadNotifications() {
         return notificationRepository.findByIsReadFalse();
+    }
+
+    @Override
+    @Transactional
+    public void validerDemandeSituationFamiliale(Long demandesituationfamiliale_id) {
+        Notification notification = notificationRepository.findByDemandesituationfamilialeId(demandesituationfamiliale_id);
+
+        DemandeSituationFamiliale demandeSituationFamiliale = demandeSituationFamilialRepository.findById(demandesituationfamiliale_id).orElse(null);
+
+        if (demandeSituationFamiliale != null && "En cours".equals(demandeSituationFamiliale.getEtat())) {
+            demandeSituationFamiliale.setEtat("Valide");
+             demandeSituationFamilialRepository.save(demandeSituationFamiliale);
+            if (notification != null) {
+                notification.setRead(true);
+                notificationRepository.save(notification);
+            }
+
+            User collaborateur = demandeSituationFamiliale.getCollaborateur();
+            if (collaborateur != null) {
+                collaborateur.setSituationFamiliale(demandeSituationFamiliale.getNouvelleSituation());
+                collaborateur.setDemandeValidee(true);
+                userRepository.save(collaborateur);
+            }
+        }
+    }
+    @Override
+    @Transactional
+    public void rejeterDemandeSituation(Long demandesituationfamiliale_id) {
+        Notification notification = notificationRepository.findByDemandesituationfamilialeId(demandesituationfamiliale_id);
+
+        DemandeSituationFamiliale demandeSituationFamiliale = demandeSituationFamilialRepository.findById(demandesituationfamiliale_id).orElse(null);
+
+        if (demandeSituationFamiliale != null && "En cours".equals(demandeSituationFamiliale.getEtat())) {
+            demandeSituationFamiliale.setEtat("Invalide");
+            demandeSituationFamilialRepository.save(demandeSituationFamiliale);
+            if (notification != null) {
+                notification.setRead(true);
+                notificationRepository.save(notification);
+            }
+
+
+
+        }
     }
 
 

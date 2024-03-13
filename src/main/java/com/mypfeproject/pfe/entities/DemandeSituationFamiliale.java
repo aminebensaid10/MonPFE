@@ -1,8 +1,11 @@
 package com.mypfeproject.pfe.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -27,4 +30,8 @@ public class DemandeSituationFamiliale {
     private String etat;
     @Column(name = "type_demande")
     private String typeDemande;
+    @OneToMany(mappedBy = "demandesituationfamiliale", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Notification> notifications;
+
 }

@@ -1,6 +1,7 @@
 package com.mypfeproject.pfe.services.Impl.CollaborateurServiceImp;
 
 import com.mypfeproject.pfe.dto.DemandeSituationFamilialeDTO;
+import com.mypfeproject.pfe.entities.Demande;
 import com.mypfeproject.pfe.entities.DemandeSituationFamiliale;
 import com.mypfeproject.pfe.entities.Notification;
 import com.mypfeproject.pfe.entities.User;
@@ -18,6 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -35,14 +37,11 @@ public class SituationFamilialeServiceImp implements SituationFamilialeService {
     private NotificationService notificationService;
     @Override
     public void creerDemandeSituationFamiliale(User collaborateur, DemandeSituationFamilialeDTO demandeDTO) {
-        // Vérifier si la situation familiale dans la table user est nulle
         if (collaborateur.getSituationFamiliale() != null) {
-            // Retourner ou lever une exception indiquant que la situation familiale est déjà définie
-            // Par exemple :
+
             throw new RuntimeException("La situation familiale est déjà définie pour le collaborateur.");
         }
 
-        // Continuer le traitement si la situation familiale est nulle
         DemandeSituationFamiliale demandeSituationFamiliale = new DemandeSituationFamiliale();
         demandeSituationFamiliale.setCollaborateur(collaborateur);
         demandeSituationFamiliale.setNouvelleSituation(demandeDTO.getNouvelleSituation());
@@ -65,6 +64,8 @@ public class SituationFamilialeServiceImp implements SituationFamilialeService {
         demandeSituationFamilialeRepository.save(demandeSituationFamiliale);
 
         collaborateur.setSituationFamiliale(demandeDTO.getNouvelleSituation());
+        collaborateur.setDemandeValidee(false);
+
         userRepository.save(collaborateur);
         Notification notification = new Notification();
         notification.setCollaborateur(collaborateur);
@@ -77,6 +78,21 @@ public class SituationFamilialeServiceImp implements SituationFamilialeService {
     @Override
     public String getSituationFamiliale(String userEmail) {
         Optional<User> optionalUser = userRepository.findByEmail(userEmail);
-        return optionalUser.map(user -> user.getSituationFamiliale().name()).orElse(null);
+
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+
+            if (user.isDemandeValidee()) {
+                return user.getSituationFamiliale().name();
+            } else {
+                return "Demande non validée";
+            }
+        }
+
+        return null;
+    }
+    @Override
+    public List<DemandeSituationFamiliale> getDemandesSituationParCollaborateur(User collaborateur) {
+        return demandeSituationFamilialeRepository.findByCollaborateur(collaborateur);
     }
 }

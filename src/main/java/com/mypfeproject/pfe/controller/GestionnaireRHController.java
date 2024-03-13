@@ -69,6 +69,15 @@ public class GestionnaireRHController {
         return demande.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+    @GetMapping("/demandes-situation/{id}")
+    @PreAuthorize("hasAnyAuthority('GESTIONNAIRERH')")
+
+    public ResponseEntity<DemandeSituationFamiliale> getDemandeSituationById(@PathVariable Long id) {
+        Optional<DemandeSituationFamiliale> demande = gestionnaireRhService.getDemandeSituationById(id);
+
+        return demande.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
     @GetMapping("/notification")
     @PreAuthorize("hasAnyAuthority('GESTIONNAIRERH')")
     public ResponseEntity<List<Notification>> getAllNotifications() {
@@ -97,6 +106,25 @@ public class GestionnaireRHController {
         }
     }
 
-
+    @PostMapping("/valider-demande-situation/{demandesituationfamiliale_id}")
+    @PreAuthorize("hasAnyAuthority('GESTIONNAIRERH')")
+    public ResponseEntity<Void> validerDemandesituation(@PathVariable Long demandesituationfamiliale_id) {
+        try {
+            gestionnaireRhService.validerDemandeSituationFamiliale(demandesituationfamiliale_id);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    @PostMapping("/rejeter-demande-situation/{demandesituationfamiliale_id}")
+    @PreAuthorize("hasAnyAuthority('GESTIONNAIRERH')")
+    public ResponseEntity<Void> rejeterDemandeSituation(@PathVariable Long demandesituationfamiliale_id) {
+        try {
+            gestionnaireRhService.rejeterDemandeSituation(demandesituationfamiliale_id);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }
 

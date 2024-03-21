@@ -19,4 +19,6 @@ public interface GestionnaireRhService {
     public void validerDemandeSituationFamiliale(Long demandesituationfamiliale_id) ;
     void rejeterDemandeSituation(Long demandesituationfamiliale_id);
     Optional<DemandeSituationFamiliale> getDemandeSituationById(Long demandesituationfamiliale_id) ;
+    void validerDemandeDemenagement(Long demandeDemenagementId);
+    void rejeterDemandeDemenagement(Long demandeDemenagementId) ;
 }

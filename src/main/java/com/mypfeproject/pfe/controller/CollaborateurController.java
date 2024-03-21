@@ -1,15 +1,13 @@
 package com.mypfeproject.pfe.controller;
 
 import com.mypfeproject.pfe.dto.DemandeCompositionFamilialeDto;
+import com.mypfeproject.pfe.dto.DemandeDemenagementDto;
 import com.mypfeproject.pfe.dto.DemandeSituationFamilialeDTO;
 import com.mypfeproject.pfe.entities.Demande;
 import com.mypfeproject.pfe.entities.DemandeSituationFamiliale;
 import com.mypfeproject.pfe.entities.MembreFamille;
 import com.mypfeproject.pfe.entities.User;
-import com.mypfeproject.pfe.services.DemandeAjoutFamilleService;
-import com.mypfeproject.pfe.services.DemandeCompositionFamilialeService;
-import com.mypfeproject.pfe.services.MembreFamilleService;
-import com.mypfeproject.pfe.services.SituationFamilialeService;
+import com.mypfeproject.pfe.services.*;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +38,9 @@ public class CollaborateurController {
     private final MembreFamilleService membreFamilleService;
     @Autowired
     private final SituationFamilialeService situationFamilialeService;
+    @Autowired
+    private final DemenagementService demenagementService;
+
     @GetMapping
     public ResponseEntity<String> sayHello(){
         return ResponseEntity.ok("Hi Collaborateur");
@@ -232,6 +233,56 @@ public class CollaborateurController {
         } catch (Exception e) {
             logger.error("Erreur lors de la création de la demande de suppression de situation familiale.", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    @PostMapping("/creer-demande-demenagement")
+    @PreAuthorize("hasAnyAuthority('COLLABORATEUR')")
+    public ResponseEntity<Void> creerDemandeDemenagement(
+            @AuthenticationPrincipal User collaborateur,
+            @ModelAttribute DemandeDemenagementDto demandeDto,
+            @RequestPart(value = "justificatifAdressePrincipale", required = false) MultipartFile justificatifAdressePrincipale
+    ) {
+        try {
+            if (collaborateur != null) {
+                logger.info("Demande de déménagement reçue. Collaborateur : {}", collaborateur.getUsername());
+            } else {
+                logger.warn("Demande de déménagement reçue. Collaborateur est null.");
+            }
+
+            demandeDto.setJustificatifAdressePrincipale(justificatifAdressePrincipale);
+
+            demenagementService.creerDemandeDemenagement(collaborateur, demandeDto);
+
+            logger.info("Demande de déménagement créée avec succès.");
+
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e) {
+            logger.error("Erreur lors de la création de la demande de déménagement.", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    @PostMapping("/creer-demande-suppression-demenagement")
+    @PreAuthorize("hasAnyAuthority('COLLABORATEUR')")
+    public ResponseEntity<Void> creerDemandeSuppressionDemenagement(
+            @AuthenticationPrincipal User collaborateur
+    ) {
+        try {
+            demenagementService.creerDemandeSuppressionDemenagement(collaborateur);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    @GetMapping("/adress-principal")
+    @PreAuthorize("hasAnyAuthority('COLLABORATEUR')")
+
+    public ResponseEntity<String> getAdressPrincipal(@AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails != null) {
+            String userEmail = userDetails.getUsername();
+            String adressprincipal = demenagementService.getAdressPrincipal(userEmail);
+            return ResponseEntity.ok(adressprincipal);
+        } else {
+            return ResponseEntity.status(401).build();
         }
     }
 

@@ -1,10 +1,7 @@
 package com.mypfeproject.pfe.services.Impl;
 
 import com.mypfeproject.pfe.entities.*;
-import com.mypfeproject.pfe.repository.DemandeAjoutFamilleRepository;
-import com.mypfeproject.pfe.repository.DemandeSituationFamilialRepository;
-import com.mypfeproject.pfe.repository.NotificationRepository;
-import com.mypfeproject.pfe.repository.UserRepository;
+import com.mypfeproject.pfe.repository.*;
 import com.mypfeproject.pfe.services.GestionnaireRhService;
 import com.mypfeproject.pfe.services.Impl.CollaborateurServiceImp.MembreFamilleServiceImpl;
 import jakarta.transaction.Transactional;
@@ -28,6 +25,8 @@ public class GestionnaireRhServiceImpl implements GestionnaireRhService {
     private NotificationRepository notificationRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private DemandeDemenagementRepository demandeDemenagementRepository ;
 
 
     @Override
@@ -157,6 +156,31 @@ public class GestionnaireRhServiceImpl implements GestionnaireRhService {
     }
     @Override
     @Transactional
+    public void validerDemandeDemenagement(Long demandeDemenagementId) {
+        Notification notification = notificationRepository.findByDemandeDemenagementId(demandeDemenagementId);
+
+        DemandeDemenagement demandeDemenagement = demandeDemenagementRepository.findById(demandeDemenagementId).orElse(null);
+
+        if (demandeDemenagement != null && "En cours".equals(demandeDemenagement.getEtat())) {
+            demandeDemenagement.setEtat("Valide");
+            demandeDemenagementRepository.save(demandeDemenagement);
+
+            if (notification != null) {
+                notification.setRead(true);
+                notificationRepository.save(notification);
+            }
+
+            User collaborateur = demandeDemenagement.getCollaborateur();
+            if (collaborateur != null) {
+                collaborateur.setAdressePrincipale(demandeDemenagement.getNouvelleAdresse());
+                collaborateur.setDemandeValideeDemenagment(true);
+                userRepository.save(collaborateur);
+            }
+        }
+    }
+
+    @Override
+    @Transactional
     public void rejeterDemandeSituation(Long demandesituationfamiliale_id) {
         Notification notification = notificationRepository.findByDemandesituationfamilialeId(demandesituationfamiliale_id);
 
@@ -172,6 +196,22 @@ public class GestionnaireRhServiceImpl implements GestionnaireRhService {
 
 
 
+        }
+    }
+    @Override
+    @Transactional
+    public void rejeterDemandeDemenagement(Long demandeDemenagementId) {
+        Notification notification = notificationRepository.findByDemandeDemenagementId(demandeDemenagementId);
+
+        DemandeDemenagement demandeDemenagement = demandeDemenagementRepository.findById(demandeDemenagementId).orElse(null);
+
+        if (demandeDemenagement != null && "En cours".equals(demandeDemenagement.getEtat())) {
+            demandeDemenagement.setEtat("Invalide");
+            demandeDemenagementRepository.save(demandeDemenagement);
+            if (notification != null) {
+                notification.setRead(true);
+                notificationRepository.save(notification);
+            }
         }
     }
 

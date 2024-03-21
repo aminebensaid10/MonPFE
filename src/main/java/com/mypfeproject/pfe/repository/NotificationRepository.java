@@ -11,6 +11,8 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
     List<Notification> findByIsReadFalse();
     Notification findByDemandeId(Long demandeId);
     Notification findByDemandesituationfamilialeId(Long demandesituationfamiliale_id);
+    Notification findByDemandeDemenagementId(Long demandeDemenagementId);
+
 
 
 

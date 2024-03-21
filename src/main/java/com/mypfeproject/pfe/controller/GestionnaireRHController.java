@@ -126,5 +126,26 @@ public class GestionnaireRHController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+    @PostMapping("/valider-demande-demenagement/{demandeDemenagementId}")
+    @PreAuthorize("hasAnyAuthority('GESTIONNAIRERH')")
+    public ResponseEntity<Void> validerDemandeDemenagement(@PathVariable Long demandeDemenagementId) {
+        try {
+            gestionnaireRhService.validerDemandeDemenagement(demandeDemenagementId);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    @PostMapping("/rejeter-demande-demenagement/{demandeDemenagementId}")
+    @PreAuthorize("hasAnyAuthority('GESTIONNAIRERH')")
+    public ResponseEntity<Void> rejeterDemandeDemenagement(@PathVariable Long demandeDemenagementId) {
+        try {
+            gestionnaireRhService.rejeterDemandeDemenagement(demandeDemenagementId);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
 }
 

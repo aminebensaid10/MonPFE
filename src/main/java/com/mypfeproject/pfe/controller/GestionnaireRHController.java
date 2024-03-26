@@ -1,8 +1,6 @@
 package com.mypfeproject.pfe.controller;
 
-import com.mypfeproject.pfe.entities.Demande;
-import com.mypfeproject.pfe.entities.DemandeSituationFamiliale;
-import com.mypfeproject.pfe.entities.Notification;
+import com.mypfeproject.pfe.entities.*;
 import com.mypfeproject.pfe.services.GestionnaireRhService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,6 +76,15 @@ public class GestionnaireRHController {
         return demande.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+    @GetMapping("/demandes-demenagement/{id}")
+    @PreAuthorize("hasAnyAuthority('GESTIONNAIRERH')")
+
+    public ResponseEntity<DemandeDemenagement> getDemandeDemenagementById(@PathVariable Long id) {
+        Optional<DemandeDemenagement> demandeDemenagement = gestionnaireRhService.getDemandeDemenagementById(id);
+
+        return demandeDemenagement.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
     @GetMapping("/notification")
     @PreAuthorize("hasAnyAuthority('GESTIONNAIRERH')")
     public ResponseEntity<List<Notification>> getAllNotifications() {
@@ -101,6 +108,16 @@ public class GestionnaireRHController {
         try {
             List<DemandeSituationFamiliale> demandesSituationFamiliale = gestionnaireRhService.getAllDemandesSituationFamiliale();
             return ResponseEntity.ok(demandesSituationFamiliale);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    @GetMapping("/situation-familiale")
+    @PreAuthorize("hasAnyAuthority('GESTIONNAIRERH')")
+    public ResponseEntity<List<User>> getCollaborateursAvecSituationFamiliale() {
+        try {
+            List<User> collaborateurs = gestionnaireRhService.getAllCollaborateursWithSituationFamiliale();
+            return ResponseEntity.ok(collaborateurs);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
@@ -145,6 +162,22 @@ public class GestionnaireRHController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+    @GetMapping("/demandes-demenagement")
+    @PreAuthorize("hasAnyAuthority('GESTIONNAIRERH')")
+    public ResponseEntity<List<DemandeDemenagement>> getAllDemandesDemenagements() {
+        try {
+            List<DemandeDemenagement> demandeDemenagements = gestionnaireRhService.getAllDemandesDemenagement();
+            return ResponseEntity.ok(demandeDemenagements);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    @GetMapping("/membres-tous")
+    @PreAuthorize("hasAnyAuthority('GESTIONNAIRERH')")
+    public ResponseEntity<List<MembreFamille>> getAllMembres() {
+        List<MembreFamille> membres = gestionnaireRhService.getAllMembres();
+        return ResponseEntity.ok(membres);
     }
 
 }

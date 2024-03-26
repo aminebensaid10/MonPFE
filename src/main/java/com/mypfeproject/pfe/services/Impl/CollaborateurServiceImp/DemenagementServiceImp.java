@@ -11,6 +11,7 @@ import com.mypfeproject.pfe.repository.UserRepository;
 import com.mypfeproject.pfe.services.DemenagementService;
 import com.mypfeproject.pfe.services.GestionnaireRhService;
 import com.mypfeproject.pfe.services.NotificationService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -111,5 +113,49 @@ public class DemenagementServiceImp implements DemenagementService {
 
         return null;
     }
+    @Override
+    public List<DemandeDemenagement> getDemandesDemenagementParCollaborateur(User collaborateur) {
+        return demandeDemenagementRepository.findByCollaborateur(collaborateur);
+    }
+@Override
+    public void declarerDemenagement(User collaborateur, DemandeDemenagementDto demandeDTO) {
+        if (collaborateur.getAdressePrincipale()== null ) {
 
+            throw new RuntimeException("Vous n'avez pas encore une adresse principale.");
+        }
+
+        DemandeDemenagement demandeDemenagement = new DemandeDemenagement();
+        demandeDemenagement.setCollaborateur(collaborateur);
+        demandeDemenagement.setNouvelleAdresse(demandeDTO.getNouvelleAdresse());
+        demandeDemenagement.setEtat("En cours");
+        demandeDemenagement.setTypeDemande("Déménagement");
+
+        if (demandeDTO.getJustificatifAdressePrincipale() != null) {
+            String justificatifFileName = UUID.randomUUID().toString() + "_" + demandeDTO.getJustificatifAdressePrincipale().getOriginalFilename();
+            Path justificatifPath = Paths.get(uploadPath).resolve(justificatifFileName);
+
+            try (InputStream justificatifInputStream = demandeDTO.getJustificatifAdressePrincipale().getInputStream()) {
+                Files.copy(justificatifInputStream, justificatifPath, StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                throw new RuntimeException("Erreur lors de la copie du justificatif vers la destination", e);
+            }
+
+            demandeDemenagement.setJustificatifPath(justificatifFileName);
+        }
+
+        demandeDemenagementRepository.save(demandeDemenagement);
+    if ("Valide".equals(demandeDemenagement.getEtat())) {
+        collaborateur.setAdressePrincipale(demandeDTO.getNouvelleAdresse());
+        collaborateur.setDemandeValideeDemenagment(false);
+
+        userRepository.save(collaborateur);
+    }
+
+        Notification notification = new Notification();
+        notification.setCollaborateur(collaborateur);
+        notification.setMessage("Nouvelle demande d'un déménagement créee");
+        notification.setRead(false);
+        notification.setDemandeDemenagement(demandeDemenagement);
+        notificationService.creerNotification(notification);
+    }
 }

@@ -87,5 +87,17 @@ public JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRe
         return userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new IllegalArgumentException("Utilisateur non trouvé"));
     }
+    public User updateProfile(String userEmail, SignUpRequest signUpRequest) {
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new IllegalArgumentException("Utilisateur non trouvé"));
+
+        user.setNom(signUpRequest.getNom());
+        user.setPrenom(signUpRequest.getPrenom());
+        user.setNumeroTelephone(signUpRequest.getNumeroTelephone());
+        user.setDateNaissance(signUpRequest.getDateNaissance());
+
+
+        return userRepository.save(user);
+    }
 
 }

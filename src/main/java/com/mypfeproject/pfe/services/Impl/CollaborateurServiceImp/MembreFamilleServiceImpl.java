@@ -32,6 +32,7 @@ public class MembreFamilleServiceImpl implements MembreFamilleService {
     }
 
 
+
     @Override
     public MembreFamille getMembreParId(Long id) {
         return membreFamilleRepository.findById(id)

@@ -1,8 +1,6 @@
 package com.mypfeproject.pfe.services;
 
-import com.mypfeproject.pfe.entities.Demande;
-import com.mypfeproject.pfe.entities.DemandeSituationFamiliale;
-import com.mypfeproject.pfe.entities.Notification;
+import com.mypfeproject.pfe.entities.*;
 
 import java.util.List;
 import java.util.Map;
@@ -21,4 +19,8 @@ public interface GestionnaireRhService {
     Optional<DemandeSituationFamiliale> getDemandeSituationById(Long demandesituationfamiliale_id) ;
     void validerDemandeDemenagement(Long demandeDemenagementId);
     void rejeterDemandeDemenagement(Long demandeDemenagementId) ;
+    List<DemandeDemenagement> getAllDemandesDemenagement() ;
+    Optional<DemandeDemenagement> getDemandeDemenagementById(Long demandeDemenagementId);
+    List<MembreFamille> getAllMembres();
+    List<User> getAllCollaborateursWithSituationFamiliale() ;
 }

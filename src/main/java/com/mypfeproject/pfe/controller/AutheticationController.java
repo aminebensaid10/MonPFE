@@ -67,6 +67,13 @@ public ResponseEntity<JwtAuthenticationResponse>signin(@RequestBody SigninReques
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
+    @PutMapping("/update")
+    public ResponseEntity<User> updateProfile(@AuthenticationPrincipal UserDetails userDetails,
+                                              @RequestBody SignUpRequest signUpRequest) {
+        String userEmail = userDetails.getUsername();
+        User updatedUser = authenticationService.updateProfile(userEmail, signUpRequest);
+        return ResponseEntity.ok(updatedUser);
+    }
 
 
 }

@@ -27,6 +27,8 @@ public class GestionnaireRhServiceImpl implements GestionnaireRhService {
     private UserRepository userRepository;
     @Autowired
     private DemandeDemenagementRepository demandeDemenagementRepository ;
+    @Autowired
+    private MembreFamilleRepository membreFamilleRepository ;
 
 
     @Override
@@ -115,6 +117,10 @@ public class GestionnaireRhServiceImpl implements GestionnaireRhService {
     @Override
     public Optional<DemandeSituationFamiliale> getDemandeSituationById(Long demandesituationfamiliale_id) {
         return demandeSituationFamilialRepository.findById(demandesituationfamiliale_id);
+    }
+    @Override
+    public Optional<DemandeDemenagement> getDemandeDemenagementById(Long demandeDemenagementId) {
+        return demandeDemenagementRepository.findById(demandeDemenagementId);
     }
 
 
@@ -214,6 +220,16 @@ public class GestionnaireRhServiceImpl implements GestionnaireRhService {
             }
         }
     }
-
-
+    @Override
+    public List<User> getAllCollaborateursWithSituationFamiliale() {
+        return userRepository.findAllByRole(Role.COLLABORATEUR);
+    }
+    @Override
+    public List<DemandeDemenagement> getAllDemandesDemenagement() {
+        return demandeDemenagementRepository.findAll();
+    }
+    @Override
+    public List<MembreFamille> getAllMembres() {
+        return membreFamilleRepository.findAll();
+    }
 }

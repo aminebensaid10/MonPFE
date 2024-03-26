@@ -3,10 +3,7 @@ package com.mypfeproject.pfe.controller;
 import com.mypfeproject.pfe.dto.DemandeCompositionFamilialeDto;
 import com.mypfeproject.pfe.dto.DemandeDemenagementDto;
 import com.mypfeproject.pfe.dto.DemandeSituationFamilialeDTO;
-import com.mypfeproject.pfe.entities.Demande;
-import com.mypfeproject.pfe.entities.DemandeSituationFamiliale;
-import com.mypfeproject.pfe.entities.MembreFamille;
-import com.mypfeproject.pfe.entities.User;
+import com.mypfeproject.pfe.entities.*;
 import com.mypfeproject.pfe.services.*;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -244,9 +241,9 @@ public class CollaborateurController {
     ) {
         try {
             if (collaborateur != null) {
-                logger.info("Demande de déménagement reçue. Collaborateur : {}", collaborateur.getUsername());
+                logger.info("Demande d ajout d'adresse principale reçue. Collaborateur : {}", collaborateur.getUsername());
             } else {
-                logger.warn("Demande de déménagement reçue. Collaborateur est null.");
+                logger.warn("Demande d ajout d'adresse principale reçue. Collaborateur est null.");
             }
 
             demandeDto.setJustificatifAdressePrincipale(justificatifAdressePrincipale);
@@ -285,5 +282,36 @@ public class CollaborateurController {
             return ResponseEntity.status(401).build();
         }
     }
+    @GetMapping("/demandes-demenagement")
+    @PreAuthorize("hasAnyAuthority('COLLABORATEUR')")
+    public ResponseEntity<List<DemandeDemenagement>> getDemandesDemenagementParCollaborateur(@AuthenticationPrincipal User collaborateur) {
+        List<DemandeDemenagement> demandeDemenagements = demenagementService.getDemandesDemenagementParCollaborateur(collaborateur);
+        return ResponseEntity.ok(demandeDemenagements);
+    }
+    @PostMapping("/declarer-demenagement")
+    @PreAuthorize("hasAnyAuthority('COLLABORATEUR')")
+    public ResponseEntity<Void> declarerDemenagement(
+            @AuthenticationPrincipal User collaborateur,
+            @ModelAttribute DemandeDemenagementDto demandeDto,
+            @RequestPart(value = "justificatifAdressePrincipale", required = false) MultipartFile justificatifAdressePrincipale
+    ) {
+        try {
+            if (collaborateur != null) {
+                logger.info("Demande de déménagement reçue. Collaborateur : {}", collaborateur.getUsername());
+            } else {
+                logger.warn("Demande de déménagement reçue. Collaborateur est null.");
+            }
 
+            demandeDto.setJustificatifAdressePrincipale(justificatifAdressePrincipale);
+
+            demenagementService.declarerDemenagement(collaborateur, demandeDto);
+
+            logger.info("Demande de déménagement créée avec succès.");
+
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e) {
+            logger.error("Erreur lors de la création de la demande de déménagement.", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }

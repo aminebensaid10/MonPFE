@@ -1,9 +1,6 @@
 package com.mypfeproject.pfe.services.Impl;
 
-import com.mypfeproject.pfe.dto.JwtAuthenticationResponse;
-import com.mypfeproject.pfe.dto.RefreshTokenRequest;
-import com.mypfeproject.pfe.dto.SignUpRequest;
-import com.mypfeproject.pfe.dto.SigninRequest;
+import com.mypfeproject.pfe.dto.*;
 import com.mypfeproject.pfe.entities.Role;
 import com.mypfeproject.pfe.entities.User;
 import com.mypfeproject.pfe.repository.UserRepository;
@@ -99,5 +96,21 @@ public JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRe
 
         return userRepository.save(user);
     }
+    public void changePassword(String userEmail, ChangePasswordRequest changePasswordRequest) {
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new IllegalArgumentException("Utilisateur non trouvé"));
+
+        if (!passwordEncoder.matches(changePasswordRequest.getAncienMdp(), user.getPassword())) {
+            throw new IllegalArgumentException("Ancien mot de passe incorrect");
+        }
+
+        if (!changePasswordRequest.getNouveauMdp().equals(changePasswordRequest.getConfirmMdp())) {
+            throw new IllegalArgumentException("Les nouveaux mots de passe ne correspondent pas");
+        }
+
+        user.setPassword(passwordEncoder.encode(changePasswordRequest.getNouveauMdp()));
+        userRepository.save(user);
+    }
+
 
 }

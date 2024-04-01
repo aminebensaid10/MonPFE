@@ -34,7 +34,6 @@ public class MembreFamille {
     private String lienParente;
 
 
-//   // private byte[] justificatif;
 
     @Column(name = "justificatif_path")
     private String justificatifPath;

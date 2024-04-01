@@ -113,7 +113,7 @@ public class GestionnaireRHController {
         }
     }
     @GetMapping("/situation-familiale")
-    @PreAuthorize("hasAnyAuthority('GESTIONNAIRERH')")
+    @PreAuthorize("hasAnyAuthority('GESTIONNAIRERH', 'GESTIONNAIREPAIE')")
     public ResponseEntity<List<User>> getCollaborateursAvecSituationFamiliale() {
         try {
             List<User> collaborateurs = gestionnaireRhService.getAllCollaborateursWithSituationFamiliale();

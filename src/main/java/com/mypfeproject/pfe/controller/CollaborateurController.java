@@ -2,6 +2,7 @@ package com.mypfeproject.pfe.controller;
 
 import com.mypfeproject.pfe.dto.DemandeCompositionFamilialeDto;
 import com.mypfeproject.pfe.dto.DemandeDemenagementDto;
+import com.mypfeproject.pfe.dto.DemandeModeTransportDto;
 import com.mypfeproject.pfe.dto.DemandeSituationFamilialeDTO;
 import com.mypfeproject.pfe.entities.*;
 import com.mypfeproject.pfe.services.*;
@@ -37,6 +38,8 @@ public class CollaborateurController {
     private final SituationFamilialeService situationFamilialeService;
     @Autowired
     private final DemenagementService demenagementService;
+    @Autowired
+    private final ModeTransportService modeTransportService;
 
     @GetMapping
     public ResponseEntity<String> sayHello(){
@@ -314,4 +317,87 @@ public class CollaborateurController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-}
+    @PostMapping("/creer-demande-mode-transport")
+    @PreAuthorize("hasAnyAuthority('COLLABORATEUR')")
+    public ResponseEntity<Void> creerDemandeModeTransport(
+            @AuthenticationPrincipal User collaborateur,
+            @ModelAttribute DemandeModeTransportDto demandeDto,
+            @RequestPart(value = "justificatifModeTransport", required = false) MultipartFile justificatifModeTransport
+    ) {
+        try {
+            if (collaborateur != null) {
+                logger.info("Demande d ajout de mode du transport reçue. Collaborateur : {}", collaborateur.getUsername());
+            } else {
+                logger.warn("Demande d ajout de mode du transport reçue. Collaborateur est null.");
+            }
+
+            demandeDto.setJustificatifModeTransport(justificatifModeTransport);
+
+            modeTransportService.creerDemandeModeTransport(collaborateur, demandeDto);
+
+            logger.info("Demande de mode du transport créée avec succès.");
+
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e) {
+            logger.error("Erreur lors de la création de la demande du mode de transport.", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    @PostMapping("/creer-demande-suppression-mode-transport")
+    @PreAuthorize("hasAnyAuthority('COLLABORATEUR')")
+    public ResponseEntity<Void> creerDemandeSuppressionModeTransport(
+            @AuthenticationPrincipal User collaborateur
+    ) {
+        try {
+            modeTransportService.creerDemandeSuppressionModeTransport(collaborateur);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    @GetMapping("/mode-transport")
+    @PreAuthorize("hasAnyAuthority('COLLABORATEUR')")
+
+    public ResponseEntity<String> getModeTransport(@AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails != null) {
+            String userEmail = userDetails.getUsername();
+            String modeTransport = modeTransportService.getModeTransport(userEmail);
+            return ResponseEntity.ok(modeTransport);
+        } else {
+            return ResponseEntity.status(401).build();
+        }
+    }
+    @GetMapping("/demandes-mode-transport")
+    @PreAuthorize("hasAnyAuthority('COLLABORATEUR')")
+    public ResponseEntity<List<DemandeModeTransport>> getDemandesModeTransportParCollaborateur(@AuthenticationPrincipal User collaborateur) {
+        List<DemandeModeTransport> demandeModeTransports = modeTransportService.getDemandesModeTransportParCollaborateur(collaborateur);
+        return ResponseEntity.ok(demandeModeTransports);
+    }
+    @PostMapping("/modifier-mode-transport")
+    @PreAuthorize("hasAnyAuthority('COLLABORATEUR')")
+    public ResponseEntity<Void> ModifierModeTransport(
+            @AuthenticationPrincipal User collaborateur,
+            @ModelAttribute DemandeModeTransportDto demandeDto,
+            @RequestPart(value = "justificatifModeTransport", required = false) MultipartFile justificatifModeTransport
+    ) {
+        try {
+            if (collaborateur != null) {
+                logger.info("Demande de modification du mode de transport reçue. Collaborateur : {}", collaborateur.getUsername());
+            } else {
+                logger.warn("Demande de modification du mode de transport reçue. Collaborateur est null.");
+            }
+
+            demandeDto.setJustificatifModeTransport(justificatifModeTransport);
+
+            modeTransportService.creerDemandeModificationModeTransport(collaborateur, demandeDto);
+
+            logger.info("Demande de modification du mode de transport créée avec succès.");
+
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e) {
+            logger.error("Erreur lors de la création de la demande de déménagement.", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }}
+
+

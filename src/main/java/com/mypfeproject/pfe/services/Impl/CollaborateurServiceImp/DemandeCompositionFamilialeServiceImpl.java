@@ -102,27 +102,27 @@ public class DemandeCompositionFamilialeServiceImpl implements DemandeCompositio
     public void creerDemandeModification(User collaborateur, Long membreId, DemandeCompositionFamilialeDto demandeDTO) {
         MembreFamille membreFamille = membreFamilleService.getMembreParId(membreId);
 
-        membreFamille.setNomMembre(demandeDTO.getNomMembre());
-        membreFamille.setPrenomMembre(demandeDTO.getPrenomMembre());
-        membreFamille.setSexe(demandeDTO.getSexe());
-        membreFamille.setDateNaissance(demandeDTO.getDateNaissance());
-        membreFamille.setLienParente(demandeDTO.getLienParente());
-        membreFamille.setCommentaire(demandeDTO.getCommentaire());
-        membreFamille.setIsUpdated("En cours de traitement");
-        if (demandeDTO.getImageMembre() != null) {
-            String imageName = UUID.randomUUID() + "_" + demandeDTO.getImageMembre().getOriginalFilename();
-            String imagePath = "fichiers/" + imageName;
+            membreFamille.setNomMembre(demandeDTO.getNomMembre());
+            membreFamille.setPrenomMembre(demandeDTO.getPrenomMembre());
+            membreFamille.setSexe(demandeDTO.getSexe());
+            membreFamille.setDateNaissance(demandeDTO.getDateNaissance());
+            membreFamille.setLienParente(demandeDTO.getLienParente());
+            membreFamille.setCommentaire(demandeDTO.getCommentaire());
+            membreFamille.setIsUpdated("En cours de traitement");
 
-            try {
-                File targetFile = new File(imagePath);
-                FileUtils.writeByteArrayToFile(targetFile, demandeDTO.getImageMembre().getBytes());
+            if (demandeDTO.getImageMembre() != null) {
+                String imageName = UUID.randomUUID() + "_" + demandeDTO.getImageMembre().getOriginalFilename();
+                String imagePath = "fichiers/" + imageName;
 
-                membreFamille.setImagePath("/images/" + imageName);
-            } catch (IOException e) {
-                e.printStackTrace();
+                try {
+                    File targetFile = new File(imagePath);
+                    FileUtils.writeByteArrayToFile(targetFile, demandeDTO.getImageMembre().getBytes());
+
+                    membreFamille.setImagePath("/images/" + imageName);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-        }
-
 
 
 

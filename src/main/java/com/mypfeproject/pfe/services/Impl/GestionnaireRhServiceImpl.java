@@ -127,6 +127,7 @@ public class GestionnaireRhServiceImpl implements GestionnaireRhService {
 
 
 
+
         @Override
         public List<Notification> getAllNotifications() {
             return notificationRepository.findAll();
@@ -134,7 +135,7 @@ public class GestionnaireRhServiceImpl implements GestionnaireRhService {
     }
     @Override
     public List<Notification> getAllUnreadNotifications() {
-        return notificationRepository.findByIsReadFalse();
+        return notificationRepository.findByIsReadFalseAndDemandeModeTransportIsNull();
     }
 
     @Override

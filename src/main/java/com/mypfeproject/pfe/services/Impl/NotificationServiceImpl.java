@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 public class NotificationServiceImpl implements NotificationService {
     @Autowired
     private NotificationRepository notificationRepository;
-
     @Override
     public void creerNotification(Notification notification) {
         notificationRepository.save(notification);

@@ -1,16 +1,15 @@
 package com.mypfeproject.pfe.controller;
 
-import com.mypfeproject.pfe.dto.JwtAuthenticationResponse;
-import com.mypfeproject.pfe.dto.RefreshTokenRequest;
-import com.mypfeproject.pfe.dto.SignUpRequest;
-import com.mypfeproject.pfe.dto.SigninRequest;
+import com.mypfeproject.pfe.dto.*;
 import com.mypfeproject.pfe.entities.Role;
 import com.mypfeproject.pfe.entities.User;
 import com.mypfeproject.pfe.services.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -67,13 +66,15 @@ public ResponseEntity<JwtAuthenticationResponse>signin(@RequestBody SigninReques
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
-    @PutMapping("/update")
-    public ResponseEntity<User> updateProfile(@AuthenticationPrincipal UserDetails userDetails,
-                                              @RequestBody SignUpRequest signUpRequest) {
-        String userEmail = userDetails.getUsername();
-        User updatedUser = authenticationService.updateProfile(userEmail, signUpRequest);
-        return ResponseEntity.ok(updatedUser);
+    @PostMapping("/change-password")
+    public ResponseEntity<Void> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = ((UserDetails) authentication.getPrincipal()).getUsername();
+
+        authenticationService.changePassword(userEmail, changePasswordRequest);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
+
 
 
 }

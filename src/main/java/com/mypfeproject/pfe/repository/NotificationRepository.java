@@ -8,10 +8,12 @@ import java.util.List;
 
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
     List<Notification> findByCollaborateur(User collaborateur);
-    List<Notification> findByIsReadFalse();
+    List<Notification> findByIsReadFalseAndDemandeModeTransportIsNull();
     Notification findByDemandeId(Long demandeId);
     Notification findByDemandesituationfamilialeId(Long demandesituationfamiliale_id);
     Notification findByDemandeDemenagementId(Long demandeDemenagementId);
+    Notification findByDemandeModeTransportId(Long demandemodetransport_id);
+
 
 
 

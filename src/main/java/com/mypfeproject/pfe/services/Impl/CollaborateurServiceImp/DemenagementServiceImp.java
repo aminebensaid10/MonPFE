@@ -85,7 +85,7 @@ public class DemenagementServiceImp implements DemenagementService {
         demandeDemenagementRepository.save(demandeDemenagement);
 
         if ("Valide".equals(demandeDemenagement.getEtat())) {
-            collaborateur.setAdressePrincipale(null); // Supprime l'adresse principale
+            collaborateur.setAdressePrincipale(null);
             collaborateur.setDemandeValidee(false);
             userRepository.save(collaborateur);
         }

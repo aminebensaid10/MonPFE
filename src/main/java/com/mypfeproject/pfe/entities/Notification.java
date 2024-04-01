@@ -32,5 +32,8 @@ public class Notification {
     @ManyToOne
     @JoinColumn(name = "demandedemenagement_id")
     private DemandeDemenagement demandeDemenagement;
+    @ManyToOne
+    @JoinColumn(name = "demandemodetransport_id")
+    private DemandeModeTransport demandeModeTransport;
 
 }

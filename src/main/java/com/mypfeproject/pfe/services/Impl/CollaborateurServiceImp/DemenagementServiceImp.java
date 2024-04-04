@@ -63,11 +63,13 @@ public class DemenagementServiceImp implements DemenagementService {
         }
 
         demandeDemenagementRepository.save(demandeDemenagement);
+        if ("Valide".equals(demandeDemenagement.getEtat())) {
 
-        collaborateur.setAdressePrincipale(demandeDTO.getNouvelleAdresse());
-        collaborateur.setDemandeValideeDemenagment(false);
+            collaborateur.setAdressePrincipale(demandeDTO.getNouvelleAdresse());
+            collaborateur.setDemandeValideeDemenagment(false);
 
-        userRepository.save(collaborateur);
+            userRepository.save(collaborateur);
+        }
         Notification notification = new Notification();
         notification.setCollaborateur(collaborateur);
         notification.setMessage("Nouvelle demande d'ajout d'adresse principale créée");

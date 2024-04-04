@@ -2,6 +2,7 @@ package com.mypfeproject.pfe.controller;
 
 import com.mypfeproject.pfe.entities.*;
 import com.mypfeproject.pfe.services.GestionnaireRhService;
+import com.mypfeproject.pfe.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,8 @@ import java.util.Optional;
 public class GestionnaireRHController {
     @Autowired
     private final GestionnaireRhService gestionnaireRhService;
+    @Autowired
+    private final UserService userService;
 
     @GetMapping
     public ResponseEntity<String>sayHello(){
@@ -178,6 +181,11 @@ public class GestionnaireRHController {
     public ResponseEntity<List<MembreFamille>> getAllMembres() {
         List<MembreFamille> membres = gestionnaireRhService.getAllMembres();
         return ResponseEntity.ok(membres);
+    }
+    @GetMapping("/family-situation")
+    public ResponseEntity<Map<SituationFamiliale, Long>> getUsersByFamilySituation() {
+        Map<SituationFamiliale, Long> usersBySituation = userService.getUsersByFamilySituation();
+        return ResponseEntity.ok(usersBySituation);
     }
 
 }

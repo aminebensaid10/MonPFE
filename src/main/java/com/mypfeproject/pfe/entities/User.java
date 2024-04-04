@@ -57,9 +57,9 @@ public class User implements UserDetails {
     @Column(name = "demande_validée_situation_familiale")
     private boolean demandeValidee;
     @Column(name = "demande_validée_déménagemenet")
-    private boolean demandeValideeDemenagment;
+    private boolean demandeValideeDemenagment= false;;
     @Column(name = "demande_validée_mode_transport")
-    private boolean demandeValideeModeTransport;
+    private boolean demandeValideeModeTransport= false;;
 
 
 

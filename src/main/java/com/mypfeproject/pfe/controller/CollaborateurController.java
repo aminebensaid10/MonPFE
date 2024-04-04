@@ -356,8 +356,7 @@ public class CollaborateurController {
         }
     }
     @GetMapping("/mode-transport")
-    @PreAuthorize("hasAnyAuthority('COLLABORATEUR')")
-
+    @PreAuthorize("hasAnyAuthority('COLLABORATEUR', 'GESTIONNAIREPAIE')")
     public ResponseEntity<String> getModeTransport(@AuthenticationPrincipal UserDetails userDetails) {
         if (userDetails != null) {
             String userEmail = userDetails.getUsername();

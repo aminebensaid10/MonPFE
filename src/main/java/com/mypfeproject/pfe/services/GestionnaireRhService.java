@@ -23,4 +23,6 @@ public interface GestionnaireRhService {
     Optional<DemandeDemenagement> getDemandeDemenagementById(Long demandeDemenagementId);
     List<MembreFamille> getAllMembres();
     List<User> getAllCollaborateursWithSituationFamiliale() ;
+    public Map<String, Long> countDemandesByEtat();
+    public Map<String, Long> countDemandesSituationByEtat();
 }

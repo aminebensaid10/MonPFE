@@ -60,8 +60,16 @@ public class User implements UserDetails {
     private boolean demandeValideeDemenagment= false;;
     @Column(name = "demande_validée_mode_transport")
     private boolean demandeValideeModeTransport= false;;
+    @OneToMany(mappedBy = "collaborateur", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<MembreFamille> membresFamille;
+    public List<MembreFamille> getMembresFamille() {
+        return membresFamille;
+    }
 
-
+    public void setMembresFamille(List<MembreFamille> membresFamille) {
+        this.membresFamille = membresFamille;
+    }
 
 
     @Override

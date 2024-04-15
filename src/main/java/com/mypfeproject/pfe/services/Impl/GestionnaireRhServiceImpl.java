@@ -8,6 +8,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -232,5 +233,33 @@ public class GestionnaireRhServiceImpl implements GestionnaireRhService {
     @Override
     public List<MembreFamille> getAllMembres() {
         return membreFamilleRepository.findAll();
+    }
+    public Map<String, Long> countDemandesByEtat() {
+        List<Demande> demandes = demandeAjoutFamilleRepository.findAll();
+
+        Map<String, Long> countsByEtat = new HashMap<>();
+
+        for (Demande demande : demandes) {
+            String etat = demande.getEtat();
+            if (etat != null) {
+                countsByEtat.put(etat, countsByEtat.getOrDefault(etat, 0L) + 1);
+            }
+        }
+
+        return countsByEtat;
+    }
+    public Map<String, Long> countDemandesSituationByEtat() {
+        List<DemandeSituationFamiliale> demandes = demandeSituationFamilialRepository.findAll();
+
+        Map<String, Long> countsByEtat = new HashMap<>();
+
+        for (DemandeSituationFamiliale demandeSituationFamiliale : demandes) {
+            String etat = demandeSituationFamiliale.getEtat();
+            if (etat != null) {
+                countsByEtat.put(etat, countsByEtat.getOrDefault(etat, 0L) + 1);
+            }
+        }
+
+        return countsByEtat;
     }
 }

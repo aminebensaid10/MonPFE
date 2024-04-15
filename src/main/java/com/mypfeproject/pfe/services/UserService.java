@@ -8,4 +8,5 @@ import java.util.Map;
 public interface UserService {
 UserDetailsService userDetailsService();
     public Map<SituationFamiliale, Long> getUsersByFamilySituation();
+    public Map<String, Long> getFamilyMembersStatistics() ;
 }

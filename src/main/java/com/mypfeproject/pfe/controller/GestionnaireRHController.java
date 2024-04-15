@@ -183,10 +183,29 @@ public class GestionnaireRHController {
         return ResponseEntity.ok(membres);
     }
     @GetMapping("/family-situation")
+    @PreAuthorize("hasAnyAuthority('GESTIONNAIRERH')")
     public ResponseEntity<Map<SituationFamiliale, Long>> getUsersByFamilySituation() {
         Map<SituationFamiliale, Long> usersBySituation = userService.getUsersByFamilySituation();
         return ResponseEntity.ok(usersBySituation);
     }
+    @GetMapping("/family-members-statistics")
+    @PreAuthorize("hasAnyAuthority('GESTIONNAIRERH')")
 
+    public ResponseEntity<Map<String, Long>> getFamilyMembersStatistics() {
+        Map<String, Long> familyMembersStatistics = userService.getFamilyMembersStatistics();
+        return ResponseEntity.ok(familyMembersStatistics);
+    }
+    @GetMapping("/countByEtat")
+    @PreAuthorize("hasAnyAuthority('GESTIONNAIRERH')")
+    public ResponseEntity<Map<String, Long>> countDemandesByEtat() {
+        Map<String, Long> countsByEtat = gestionnaireRhService.countDemandesByEtat();
+        return ResponseEntity.ok(countsByEtat);
+    }
+    @GetMapping("/countRequestsSituationByEtat")
+    @PreAuthorize("hasAnyAuthority('GESTIONNAIRERH')")
+    public ResponseEntity<Map<String, Long>> countDemandesSituationByEtat() {
+        Map<String, Long> countsByEtat = gestionnaireRhService.countDemandesSituationByEtat();
+        return ResponseEntity.ok(countsByEtat);
+    }
 }
 

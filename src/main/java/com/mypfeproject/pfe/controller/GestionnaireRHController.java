@@ -207,5 +207,17 @@ public class GestionnaireRHController {
         Map<String, Long> countsByEtat = gestionnaireRhService.countDemandesSituationByEtat();
         return ResponseEntity.ok(countsByEtat);
     }
+    @GetMapping("/countRequestsDemenagementByEtat")
+    @PreAuthorize("hasAnyAuthority('GESTIONNAIRERH')")
+    public ResponseEntity<Map<String,Long>> countDemandesDemenagementByEtat(){
+        Map<String, Long> countsByEtat = gestionnaireRhService.countRequestsDemenagement();
+        return ResponseEntity.ok(countsByEtat);
+
+    }
+    @GetMapping("/percentageSituationFamiliale")
+    @PreAuthorize("hasAnyAuthority('GESTIONNAIRERH')")
+    public Map<SituationFamiliale, Double> getUsersPercentageBySituationFamiliale() {
+        return userService.getUsersPercentageBySituationFamiliale();
+    }
 }
 

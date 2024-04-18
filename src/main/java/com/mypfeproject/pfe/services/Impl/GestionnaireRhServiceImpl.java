@@ -262,4 +262,16 @@ public class GestionnaireRhServiceImpl implements GestionnaireRhService {
 
         return countsByEtat;
     }
+    public Map<String,Long> countRequestsDemenagement(){
+        List<DemandeDemenagement> demandeDemenagements= demandeDemenagementRepository.findAll();
+        Map<String,Long> countsbyetat= new HashMap<>() ;
+        for (DemandeDemenagement demandeDemenagement : demandeDemenagements) {
+            String etat = demandeDemenagement.getEtat();
+            if (etat != null) {
+                countsbyetat.put(etat, countsbyetat.getOrDefault(etat, 0L) + 1);
+            }
+        }
+
+        return countsbyetat;
+    }
 }

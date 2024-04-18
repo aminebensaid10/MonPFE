@@ -3,6 +3,7 @@ package com.mypfeproject.pfe.controller;
 import com.mypfeproject.pfe.entities.DemandeDemenagement;
 import com.mypfeproject.pfe.entities.DemandeModeTransport;
 import com.mypfeproject.pfe.services.GestionnairePaieService;
+import com.mypfeproject.pfe.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -19,6 +21,8 @@ import java.util.Optional;
 public class GestionnairePAIEController {
     @Autowired
     private final GestionnairePaieService gestionnairePaieService;
+    @Autowired
+    private final UserService userService;
     @GetMapping
     public ResponseEntity<String> sayHello(){
         return ResponseEntity.ok("Hi Gestionnaire Paie");
@@ -61,5 +65,16 @@ public class GestionnairePAIEController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+    @GetMapping("/countByTransportMode")
+    @PreAuthorize("hasAnyAuthority('GESTIONNAIREPAIE')")
+    public ResponseEntity<Map<String, Long>> countUsersByTransportMode() {
+        Map<String, Long> usersByTransportMode = userService.countUsersByTransportMode();
+        return ResponseEntity.ok(usersByTransportMode);
+    }
+    @GetMapping("/percentageModeTransport")
+    @PreAuthorize("hasAnyAuthority('GESTIONNAIREPAIE')")
+    public Map<String, Double> getUsersPercentageByTransportMode() {
+        return userService.getUsersPercentageByTransportMode();
     }
 }

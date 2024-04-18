@@ -74,4 +74,62 @@ public class UserServiceImpl implements UserService {
         List<MembreFamille> membresFamille = user.getMembresFamille();
         return membresFamille.size();
     }
+    public Map<String, Long> countUsersByTransportMode() {
+        List<User> users = userRepository.findAll();
+        Map<String, Long> usersByTransportMode = new HashMap<>();
+
+        for (User user : users) {
+            String transportMode = user.getModeDeTransport();
+            if (transportMode != null && !transportMode.isEmpty()) {
+                usersByTransportMode.put(transportMode, usersByTransportMode.getOrDefault(transportMode, 0L) + 1);
+            }
+        }
+
+        return usersByTransportMode;
+    }
+    public Map<String, Double> getUsersPercentageByTransportMode() {
+        Map<String, Long> usersByTransportMode = countUsersByTransportMode();
+        long totalUsers = usersByTransportMode.values().stream().mapToLong(Long::longValue).sum();
+
+        Map<String, Double> percentageByTransportMode = new HashMap<>();
+        for (Map.Entry<String, Long> entry : usersByTransportMode.entrySet()) {
+            String transportMode = entry.getKey();
+            Long count = entry.getValue();
+            double percentage = (count * 100.0) / totalUsers;
+            percentageByTransportMode.put(transportMode, percentage);
+        }
+
+        return percentageByTransportMode;
+    }
+    public Map<SituationFamiliale, Double> getUsersPercentageBySituationFamiliale() {
+        List<User> users = userRepository.findAll(); // Suppose userRepository est injecté
+
+        // Filtrer les utilisateurs ayant une situation familiale non nulle
+        List<User> usersWithSituationFamiliale = users.stream()
+                .filter(user -> user.getSituationFamiliale() != null)
+                .collect(Collectors.toList());
+
+        // Compter le nombre d'utilisateurs pour chaque situation familiale
+        Map<SituationFamiliale, Long> usersBySituationFamiliale = usersWithSituationFamiliale.stream()
+                .collect(Collectors.groupingBy(
+                        User::getSituationFamiliale,
+                        Collectors.counting()));
+
+        long totalUsers = usersWithSituationFamiliale.size();
+
+        // Calculer les pourcentages pour chaque situation familiale
+        Map<SituationFamiliale, Double> percentageBySituationFamiliale = new HashMap<>();
+        for (Map.Entry<SituationFamiliale, Long> entry : usersBySituationFamiliale.entrySet()) {
+            SituationFamiliale situationFamiliale = entry.getKey();
+            Long count = entry.getValue();
+
+            // Calculer le pourcentage
+            double percentage = (count * 100.0) / totalUsers;
+
+            // Ajouter le pourcentage à la map
+            percentageBySituationFamiliale.put(situationFamiliale, percentage);
+        }
+
+        return percentageBySituationFamiliale;
+    }
 }

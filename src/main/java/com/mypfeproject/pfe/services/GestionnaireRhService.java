@@ -25,4 +25,6 @@ public interface GestionnaireRhService {
     List<User> getAllCollaborateursWithSituationFamiliale() ;
     public Map<String, Long> countDemandesByEtat();
     public Map<String, Long> countDemandesSituationByEtat();
+    public Map<String,Long> countRequestsDemenagement() ;
+
 }

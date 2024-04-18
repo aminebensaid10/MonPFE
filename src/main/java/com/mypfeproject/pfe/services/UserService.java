@@ -9,4 +9,7 @@ public interface UserService {
 UserDetailsService userDetailsService();
     public Map<SituationFamiliale, Long> getUsersByFamilySituation();
     public Map<String, Long> getFamilyMembersStatistics() ;
+    public Map<String, Long> countUsersByTransportMode();
+    public Map<String, Double> getUsersPercentageByTransportMode();
+    Map<SituationFamiliale, Double> getUsersPercentageBySituationFamiliale() ;
 }

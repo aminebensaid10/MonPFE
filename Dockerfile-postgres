@@ -1,0 +1,7 @@
+# Utiliser l'image officielle PostgreSQL comme base
+FROM registry.hub.docker.com/library/postgres:latest
+
+# Variables d'environnement pour la création de la base de données et de l'utilisateur
+ENV POSTGRES_DB MyDatabasePFE
+ENV POSTGRES_USER postgres
+ENV POSTGRES_PASSWORD admin

@@ -2,7 +2,7 @@ version: '3'
 
 services:
   myapp-backend:
-    image: localhost/foryoubackend:latest
+    image: $DOCKER_USERNAME/bensaidmedamine:1.0.0
     ports:
       - "8080:8080"
     depends_on:
@@ -13,7 +13,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: admin
 
   database:
-    image: localhost/foryoudb:latest
+    image: mypostgresimage
     environment:
       POSTGRES_DB: MyDatabasePFE
       POSTGRES_USER: postgres

@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  myapp-backend:
+    image: localhost/foryoubackend:latest
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/MyDatabasePFE
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: admin
+
+  database:
+    image: localhost/foryoudb:latest
+    environment:
+      POSTGRES_DB: MyDatabasePFE
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"

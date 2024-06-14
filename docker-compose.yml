@@ -2,7 +2,7 @@ version: '3'
 
 services:
   myapp-backend:
-    image: $DOCKER_USERNAME/bensaidmedamine:1.0.0
+    image: aminebensaid/bensaidmedamine:1.0.0
     ports:
       - "8080:8080"
     depends_on:

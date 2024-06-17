@@ -87,7 +87,14 @@
 			<version>42.6.0</version>
 		</dependency>
 	</dependencies>
+<distributionManagement>
+		<repository>
+			<id>snapshotRepo</id>
+			<name>Nexus Snapshot Repository</name>
+			<url>http://192.168.1.8:8082/repository/maven-snapshots/</url>
+		</repository>
 
+	</distributionManagement>
 	<build>
 		<plugins>
 			<plugin>

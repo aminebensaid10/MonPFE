@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.mypfeproject</groupId>
 	<artifactId>pfe</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.1-SNAPSHOT</version>
 	<name>pfe</name>
 	<description>my pfe project </description>
 	<properties>
@@ -91,7 +91,7 @@
 		<repository>
 			<id>snapshotRepo</id>
 			<name>Nexus Snapshot Repository</name>
-			<url>http://192.168.1.8:8082/repository/maven-releases/</url>
+			<url>http://192.168.1.8:8082/repository/maven-snapshots/</url>
 		</repository>
 
 	</distributionManagement>

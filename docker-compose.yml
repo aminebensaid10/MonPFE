@@ -20,7 +20,7 @@ services:
       POSTGRES_PASSWORD: admin
     ports:
       - "5432:5432"
-myapp-frontend:
-    image: mon-front:latest
-    ports:
-      - "80:80"
+# myapp-frontend:
+#     image: mon-front:latest
+#     ports:
+#       - "80:80"
